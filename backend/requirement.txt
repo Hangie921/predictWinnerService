@@ -1,1 +1,5 @@
 python-dotenv
+Django
+django-cors-headers
+djangorestframework
+djangorestframework-simplejwt
