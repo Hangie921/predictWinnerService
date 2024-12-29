@@ -1,16 +1,24 @@
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+ALLOWED_HOSTS = ['*']
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEBUG = True
+SECRET_KEY = 'django'
+
 INSTALLED_APPS = [
-    'predictMLBWinnerService',
     'django.contrib.contenttypes',
     'django.contrib.auth',
 ]
-ROOT_URLCONF = 'predictMLBWinnerService.urls'
+ROOT_URLCONF = 'backend.urls'
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mlb',
+        'NAME': os.getenv('DB_NAME'),
         'USER': '',
         'PASSWORD': '',
         'HOST': '127.0.0.1',
@@ -19,9 +27,6 @@ DATABASES = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-DEBUG = True
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 TEMPLATES = {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',  # 指定模板引擎
@@ -44,4 +49,6 @@ TEMPLATES = {
     },
 
 
-SECRET_KEY = 'django'
+
+CORS_ALLOW_ALL_ORIGIN = True
+CORS_ALLOWS_CREDENTIALS = True
