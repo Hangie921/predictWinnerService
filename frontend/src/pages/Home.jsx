@@ -1,10 +1,11 @@
 import Header from "../components/Header"
+import Dashboard from "../components/Dashboard"
 
-function Home () {
+function Home() {
   return (
     <div>
-      <Header/>
-      <h1>Home</h1>
+      <Header />
+      <Dashboard />
     </div>
   )
 }

@@ -1,14 +1,22 @@
+@import "./Variables.scss";
+
 .Header {
   background: #061e42;
   color: #efefef;
-  li  {
-    display: inline-block;
-    padding: 5px;
-  }
-  a {
-    color: #efefef;
-    text-decoration: none;
+  text-align: center;
+  font-family: proxima-nova;
+  font-weight: $font_weight_bold;
+  font-size: $font_size_normal;
+
+  display: grid;
+  grid-template-columns: 100px 100px 100px;
+  padding-top: $padding_xl;
+
+  .HeaderButton {
+    padding-bottom: $padding_md;
+
+    a {
+      color: #efefef;
+    }
   }
 }
-
-

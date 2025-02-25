@@ -7,6 +7,9 @@ import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
 import BackTest from "./pages/BackTest"
 import ProtectedRoute from "./components/ProtectedRoute"
+import "./styles/Normalize.scss"
+import "./styles/Responsive.scss"
+import "./styles/App.scss"
 
 function Logout() {
   localStorage.clear()

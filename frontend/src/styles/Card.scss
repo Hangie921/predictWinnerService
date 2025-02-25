@@ -1,0 +1,101 @@
+@import "./Variables.scss";
+
+$card_header_background_color: #f7f7f7;
+
+.card {
+    // background-color: $color_main_background;
+    border: $card_border_width solid $color_card_border;
+    flex-basis: 32%;
+    margin-left: 0;
+    margin-right: 0;
+    color: $font_color_main;
+}
+
+.card-row.last .card:last-child {
+    margin-left: 2%;
+    margin-right: auto;
+}
+
+.card__label {
+    flex-basis: 32%;
+    text-align: left;
+    min-width: 125px;
+}
+
+.card__value {
+    flex-basis: 32%;
+    color: $font_color_secondary;
+}
+
+.card__overall,
+.card__home__away,
+.card__handed,
+.card__l10 {
+    padding: 0.5rem 1rem 0.2rem 1rem;
+
+    .card__label {
+        flex-basis: 33%;
+        font-weight: $font_weight_bold;
+    }
+
+    .card__value {
+        flex-basis: 16.5%;
+    }
+}
+
+.card__sub_titile,
+.card__streak,
+.card__diff,
+.card__winner {
+    padding: 0.5rem 1rem 0.2rem 1rem;
+
+    .card__label {
+        flex-basis: 33%;
+        font-weight: $font_weight_bold;
+    }
+
+    .card__value {
+        flex-basis: 33%;
+
+    }
+}
+
+.card__sub_title {
+    border-top: 1px solid $color_card_border;
+    padding: 1.2rem 1rem 0.5rem 1rem;
+}
+
+.card__starter {
+    padding: 0.5rem 1rem 0.2rem 1rem;
+
+    .starter__label {
+        &+.starter__value {
+            color: $font_color_main;
+        }
+
+        flex-basis: 20%;
+        font-weight: $font_weight_bold;
+    }
+
+    .starter__value {
+        flex-basis: 40%;
+    }
+
+    &>.starter__value {
+        color: $font_color_secondary;
+    }
+
+}
+
+.card__team {
+    font-size: 1.5rem;
+    font-weight: $font_weight_bold;
+    padding: 0.5rem 1rem 0.2rem 1rem;
+    background-color: $card_header_background_color;
+}
+
+.card__power {
+    padding: 0.5rem 1rem 0.2rem 1rem;
+    background-color: $card_header_background_color;
+    font-size: 1.2rem;
+}
