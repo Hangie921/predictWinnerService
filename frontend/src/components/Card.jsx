@@ -22,134 +22,195 @@ import "../styles/Card.scss"
 // Diff             112             82
 // Winner           False           True
 
-const fakeMatches = {
-    matchID: 745707,
-    name: {
-        home: "Yankees",
-        away: "Guardians"
-    },
-    powerRanking: {
-        home: 1.5110000000000001,
-        away: 1.233
-    },
-    starter: {
-        home: {
-            name: "Luis Gil",
-            handed: "RHP",
-            record: "12-6",
-            so: 144,
-        },
-        away: {
-            name: "Matthew Boyd",
-            handed: "LHP",
-            record: "0-0",
-            so: 8,
+
+const GAME_GAME_ID_JSON_KEY = "gameID"
+const GAME_GAME_DATE_JSON_KEY = "gameDate"
+const GAME_HOME_TEAM_JSON_KEY = "homeTeam"
+const GAME_AWAY_TEAM_JSON_KEY = "awayTeam"
+const GAME_NAME_JSON_KEY = "name"
+const GAME_OVERALL_WINS_JSON_KEY = "overallWins"
+const GAME_OVERALL_LOSS_JSON_KEY = "overallLosses"
+const GAME_HOME_WINS_JSON_KEY = "homeWins"
+const GAME_HOME_LOSS_JSON_KEY = "homeLosses"
+const GAME_AWAY_WINS_JSON_KEY = "awayWins"
+const GAME_AWAY_LOSS_JSON_KEY = "awayLosses"
+const GAME_LEFT_HANDED_WINS_JSON_KEY = "lHandedWins"
+const GAME_LEFT_HANDED_LOSS_JSON_KEY = "lHandedLosses"
+const GAME_RIGHT_HANDED_WINS_JSON_KEY = "rHandedWins"
+const GAME_RIGHT_HANDED_LOSS_JSON_KEY = "rHandedLosses"
+const GAME_LAST_10_WINS_JSON_KEY = "l10Wins"
+const GAME_LAST_10_LOSS_JSON_KEY = "l10Losses"
+const GAME_DIFF_JSON_KEY = "diff"
+const GAME_STREAK_IS_WIN_JSON_KEY = "streakIsWin"
+const GAME_STREAK_JSON_KEY = "streak"
+const GAME_PITCHER_JSON_KEY = "pitcher"
+const GAME_PITCHER_ERA_JSON_KEY = "era"
+const GAME_PITCHER_WINS_JSON_KEY = "wins"
+const GAME_PITCHER_LOSS_JSON_KEY = "losses"
+
+const GAME_JSON = {
+    [GAME_GAME_ID_JSON_KEY]: 746196,
+    [GAME_GAME_DATE_JSON_KEY]: "2024-08-01",
+    [GAME_HOME_TEAM_JSON_KEY]: {
+        [GAME_NAME_JSON_KEY]: "Angels",
+        [GAME_OVERALL_WINS_JSON_KEY]: 47,
+        [GAME_OVERALL_LOSS_JSON_KEY]: 62,
+        [GAME_HOME_WINS_JSON_KEY]: 24,
+        [GAME_HOME_LOSS_JSON_KEY]: 34,
+        [GAME_AWAY_WINS_JSON_KEY]: 23,
+        [GAME_AWAY_LOSS_JSON_KEY]: 28,
+        [GAME_LEFT_HANDED_WINS_JSON_KEY]: 8,
+        [GAME_LEFT_HANDED_LOSS_JSON_KEY]: 11,
+        [GAME_RIGHT_HANDED_WINS_JSON_KEY]: 8,
+        [GAME_RIGHT_HANDED_LOSS_JSON_KEY]: 11,
+        [GAME_LAST_10_WINS_JSON_KEY]: 5,
+        [GAME_LAST_10_LOSS_JSON_KEY]: 5,
+        [GAME_DIFF_JSON_KEY]: -94,
+        [GAME_STREAK_IS_WIN_JSON_KEY]: false,
+        [GAME_STREAK_JSON_KEY]: 2,
+        [GAME_PITCHER_JSON_KEY]: {
+            [GAME_NAME_JSON_KEY]: "Carson Fulmer",
+            [GAME_PITCHER_ERA_JSON_KEY]: 3.69,
+            [GAME_PITCHER_WINS_JSON_KEY]: 0,
+            [GAME_PITCHER_LOSS_JSON_KEY]: 2
         }
     },
-    overall: {
-        home: {
-            record: "73-53",
-            percentage: ".579"
-        },
-        away: {
-            record: "73-52",
-            percentage: ".584"
+    [GAME_AWAY_TEAM_JSON_KEY]: {
+        [GAME_NAME_JSON_KEY]: "Rockies",
+        [GAME_OVERALL_WINS_JSON_KEY]: 40,
+        [GAME_OVERALL_LOSS_JSON_KEY]: 70,
+        [GAME_HOME_WINS_JSON_KEY]: 24,
+        [GAME_HOME_LOSS_JSON_KEY]: 29,
+        [GAME_AWAY_WINS_JSON_KEY]: 16,
+        [GAME_AWAY_LOSS_JSON_KEY]: 41,
+        [GAME_LEFT_HANDED_WINS_JSON_KEY]: 12,
+        [GAME_LEFT_HANDED_LOSS_JSON_KEY]: 21,
+        [GAME_RIGHT_HANDED_WINS_JSON_KEY]: 12,
+        [GAME_RIGHT_HANDED_LOSS_JSON_KEY]: 21,
+        [GAME_LAST_10_WINS_JSON_KEY]: 4,
+        [GAME_LAST_10_LOSS_JSON_KEY]: 6,
+        [GAME_DIFF_JSON_KEY]: -174,
+        [GAME_STREAK_IS_WIN_JSON_KEY]: true,
+        [GAME_STREAK_JSON_KEY]: 2,
+        [GAME_PITCHER_JSON_KEY]: {
+            [GAME_NAME_JSON_KEY]: "Ryan Feltner",
+            [GAME_PITCHER_ERA_JSON_KEY]: 4.97,
+            [GAME_PITCHER_WINS_JSON_KEY]: 1,
+            [GAME_PITCHER_LOSS_JSON_KEY]: 10
         }
-    },
-    homeAway: {
-        home: {
-            record: "32-28",
-            percentage: ".533"
-        },
-        away: {
-            record: "35-32",
-            percentage: ".522"
-        }
-    },
-    handed: {
-        home: {
-            record: "13-20",
-            percentage: ".394"
-        },
-        away: {
-            record: "47-43",
-            percentage: ".522"
-        }
-    },
-    l10: {
-        home: {
-            record: "5-5",
-            percentage: ".500"
-        },
-        away: {
-            record: "6-4",
-            percentage: ".600"
-        }
-    },
-    streak: {
-        home: {
-            isWin: false,
-            streak: 3
-        },
-        away: {
-            isWin: true,
-            streak: 1
-        }
-    },
-    diff: {
-        home: 112,
-        away: 82
-    },
-    winner: {
-        home: false,
-        away: true
     }
 }
 
 function Card(props) {
-    console.log('fake is', fakeMatches)
+    console.log('data', props.data)
+    const match = props.data
+    // const match = GAME_JSON
+
     function round(from) {
         return Math.round(from * 1000) / 1000
+    }
+
+    function calculateWinning(win, loss) {
+        return round(win / loss)
+    }
+
+    function getHandedWinning(home, away) {
+        let homeWins = 0
+        let homeLosses = 0
+        let awayWins = 0
+        let awayLosses = 0
+
+        if (away.pitcher.handed === 'LHP') {
+            homeWins = home.lHandedWins
+            homeLosses = home.lHandedLosses
+        } else {
+            homeWins = home.rHandedWins
+            homeLosses = home.rHandedLosses
+        }
+        if (home.pitcher.handed === 'LHP') {
+            awayWins = away.lHandedWins
+            awayLosses = away.lHandedLosses
+        } else {
+            awayWins = away.rHandedWins
+            awayLosses = away.rHandedLosses
+        }
+        return (
+            <div className="handed flex">
+                <div className="card__label">
+                    <span>Handed</span>
+                </div>
+                <div className="card__value">
+                    <span>{homeWins}-{homeLosses}</span>
+                </div>
+                <div className="card__value">
+                    <span>{round(homeWins / homeLosses)}</span>
+                </div>
+                <div className="card__value">
+                    <span>{awayWins}-{awayLosses}</span>
+                </div>
+                <div className="card__value">
+                    <span>{round(awayWins / awayLosses)}</span>
+                </div>
+            </div>
+        )
+    }
+
+    function getStreakWinning(home, away) {
+        return (
+            <div className="streak flex">
+                <div className="card__label">
+                    <span>Streak</span>
+                </div>
+                <div className="card__value">
+                    <span>{home.streakIsWin ? "W" : "L"}{home.streak}</span>
+                </div>
+                <div className="card__value">
+                    <span>{away.streakIsWin ? "W" : "L"}{away.streak}</span>
+                </div>
+            </div>
+        )
     }
     return (
         <div className="card">
             <div className="card__team flex flex-justify-between">
-                <span className="team__home ">{fakeMatches.name.home + props.index}</span>
-                <span className="team__away">{fakeMatches.name.away}</span>
+                <span className="team__home">{match.homeTeam.name}</span>
+                <span className="team__away">{match.awayTeam.name}</span>
             </div>
             <div className="card__power flex flex-justify-between">
-                <span className="power_home">{round(fakeMatches.powerRanking.home)}</span>
-                <span className="power_away">{round(fakeMatches.powerRanking.away)}</span>
+                <span className="power_home">11{match.homeTeam.power}</span>
+                <span className="power_away">22{match.awayTeam.power}</span>
             </div>
             <div className="card__starter">
                 <div className="">
                     <span>Starter</span>
                 </div>
             </div>
-            <div className="card__starter flex flex-justify-between">
+            <div className="card__starter flex flex-wrap">
                 <div className="starter__label">
                     <span>Home</span>
                 </div>
-                <div className="starter__value">
-                    <span>{fakeMatches.starter.home.name}</span>
+                <div className="starter__value starter__name">
+                    <span>{match.homeTeam.pitcher.name}</span>
                 </div>
+                <div className="starter__label"></div>
                 <div className="starter__value flex flex-justify-between">
-                    <span>{fakeMatches.starter.home.handed} </span>
-                    <span>{fakeMatches.starter.home.record}</span>
-                    <span>{fakeMatches.starter.home.so} SO</span>
+                    <span>{match.homeTeam.pitcher.handed} </span>
+                    <span>{match.homeTeam.pitcher.wins}-{match.homeTeam.pitcher.losses} {match.homeTeam.pitcher.era}</span>
+                    <span>{match.homeTeam.pitcher.so} SO</span>
                 </div>
             </div>
-            <div className="card__starter flex flex-justify-between">
+            <div className="card__starter flex flex-wrap">
                 <div className="starter__label">
                     <span>Away</span>
                 </div>
-                <div className="starter__value">
-                    <span>{fakeMatches.starter.away.name}</span>
+                <div className="starter__value starter__name">
+                    <span>{match.awayTeam.pitcher.name}</span>
                 </div>
+                <div className="starter__label"></div>
                 <div className="starter__value flex flex-justify-between">
-                    <span>{fakeMatches.starter.away.handed}</span>
-                    <span>{fakeMatches.starter.away.record}</span>
-                    <span>{fakeMatches.starter.away.so} SO</span>
+                    <span>{match.awayTeam.pitcher.handed}</span>
+                    <span>{match.awayTeam.pitcher.wins}-{match.awayTeam.pitcher.losses} {match.awayTeam.pitcher.era}</span>
+                    <span>{match.awayTeam.pitcher.so} SO</span>
                 </div>
             </div>
             <div className="card__sub_title flex">
@@ -167,16 +228,16 @@ function Card(props) {
                         <span>Overall</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.overall.home.record}</span>
+                        <span>{match.homeTeam.overallWins}-{match.homeTeam.overallLosses}</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.overall.home.percentage}</span>
+                        <span>{round(match.homeTeam.overallWins / match.homeTeam.overallLosses)}</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.overall.away.record}</span>
+                        <span>{match.awayTeam.overallWins}-{match.awayTeam.overallLosses}</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.overall.away.percentage}</span>
+                        <span>{round(match.awayTeam.overallWins / match.awayTeam.overallLosses)}</span>
                     </div>
                 </div>
             </div>
@@ -186,69 +247,24 @@ function Card(props) {
                         <span>Home/Away</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.homeAway.home.record}</span>
+                        <span>{match.homeTeam.homeWins}-{match.homeTeam.homeLosses}</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.homeAway.home.percentage}</span>
+                        <span>{round(match.homeTeam.homeWins / match.homeTeam.homeLosses)}</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.homeAway.away.record}</span>
+                        <span>{match.awayTeam.awayWins}-{match.awayTeam.awayLosses}</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.homeAway.away.percentage}</span>
+                        <span>{round(match.awayTeam.awayWins / match.awayTeam.awayLosses)}</span>
                     </div>
                 </div>
             </div>
             <div className="card__handed">
-                <div className="handed flex">
-                    <div className="card__label">
-                        <span>Handed</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{fakeMatches.handed.home.record}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{fakeMatches.handed.home.percentage}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{fakeMatches.handed.away.record}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{fakeMatches.handed.away.percentage}</span>
-                    </div>
-                </div>
-            </div>
-            <div className="card__l10">
-                <div className="l10 flex">
-                    <div className="card__label">
-                        <span>l10</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{fakeMatches.l10.home.record}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{fakeMatches.l10.home.percentage}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{fakeMatches.l10.away.record}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{fakeMatches.l10.away.percentage}</span>
-                    </div>
-                </div>
+                {getHandedWinning(match.homeTeam, match.awayTeam)}
             </div>
             <div className="card__streak">
-                <div className="streak flex">
-                    <div className="card__label">
-                        <span>Streak</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{fakeMatches.streak.home.isWin ? "W" : "L"}{fakeMatches.streak.home.streak}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{fakeMatches.streak.away.isWin ? "W" : "L"}{fakeMatches.streak.away.streak}</span>
-                    </div>
-                </div>
+                {getStreakWinning(match.homeTeam, match.awayTeam)}
             </div>
             <div className="card__diff">
                 <div className="diff flex">
@@ -256,26 +272,26 @@ function Card(props) {
                         <span>Diff</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.diff.home}</span>
+                        <span>{match.homeTeam.diff}</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.diff.away}</span>
+                        <span>{match.awayTeam.diff}</span>
                     </div>
                 </div>
             </div>
-            <div className="card__winner">
+            {/* <div className="card__winner">
                 <div className="winner flex">
                     <div className="card__label">
                         <span>Winner</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.winner.home ? "True" : "False"}</span>
+                        <span>{match.winner.home ? "True" : "False"}</span>
                     </div>
                     <div className="card__value">
-                        <span>{fakeMatches.winner.away ? "True" : "False"}</span>
+                        <span>{match.winner.away ? "True" : "False"}</span>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }

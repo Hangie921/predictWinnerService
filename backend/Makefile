@@ -12,5 +12,6 @@ check_venv_is_activated:
 	which python3
 
 start_backend: check_venv_is_activated
+	python3 manage.py makemigrations
 	python3 manage.py migrate
 	python3 manage.py runserver

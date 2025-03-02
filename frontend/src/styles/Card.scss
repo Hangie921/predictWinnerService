@@ -69,20 +69,22 @@ $card_header_background_color: #f7f7f7;
     padding: 0.5rem 1rem 0.2rem 1rem;
 
     .starter__label {
-        &+.starter__value {
-            color: $font_color_main;
-        }
-
-        flex-basis: 20%;
+        flex-basis: 30%;
         font-weight: $font_weight_bold;
     }
 
     .starter__value {
-        flex-basis: 40%;
-    }
-
-    &>.starter__value {
+        flex-basis: 70%;
         color: $font_color_secondary;
+
+        &.starter__name {
+            color: $font_color_main;
+        }
+
+
+        & span {
+            flex-basis: 32%;
+        }
     }
 
 }

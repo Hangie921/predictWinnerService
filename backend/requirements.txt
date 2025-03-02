@@ -3,4 +3,5 @@ Django
 django-cors-headers
 djangorestframework
 djangorestframework-simplejwt
+djangorestframework-camel-case
 psycopg2

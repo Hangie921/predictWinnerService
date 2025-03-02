@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Weight, PredictionQuery
+from .models import User, Weight, Game
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,11 +16,27 @@ class UserSerializer(serializers.ModelSerializer):
 class WeightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Weight
-        fields = ["diff_win_point_weight", "last_10_win_weight", "home_or_away_winning_weight", "pithcer_handed_winning_weight", "overall_winning_weight", "owner"]
+        fields = ["diff_win_point_weight", 
+                  "last_10_win_weight", 
+                  "home_or_away_winning_weight",
+                  "pithcer_handed_winning_weight",
+                  "overall_winning_weight",
+                  "owner"
+                ]
         extra_kwargs = {"owner": {"read_only": True}}
 
-class PredictionQuerySerializer(serializers.ModelSerializer):
+class GameSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PredictionQuery
-        fields = ["user", "start_date", "end_date"]
-        # extra_kwargs = {"result": {"read_only": True}}
+        model = Game
+        fields = ["game_pk", 
+                  "game_date", 
+                  "winner_t_id",
+                  "h_team_power",
+                  "a_team_power",
+                  "is_winner_home_team",
+                  "h_starter_id",
+                  "a_starter_id",
+                  "home_team_id",
+                  "away_team_id"
+                ]
+        extra_kwargs = {"owner": {"read_only": True}}
