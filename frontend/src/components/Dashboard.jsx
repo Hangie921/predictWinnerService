@@ -5,24 +5,32 @@ import LoadingIndicator from "./LoadingIndicator";
 import "../styles/Dashboard.scss"
 import Card from "./Card";
 // import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+import DatePicker from "./DatePicker"
+import dayjs from "dayjs"
 
+const dateFormat = "YYYY-MM-DD"
+const defaultDiffWeight = 1
+const defaultL10Weight = 1
+const defaultHomeAwayWeight = 1
+const defaultHandedWeight = 1
+const defaultOverallWeight = 1
 
 function Dashboard() {
     const [cards, setCards] = useState([])
     const [isLoading, setLoading] = useState(false)
-    const [date, setDate] = useState("2024-08-01")
-    const [diffWeight, setDiffWeight] = useState(1.5)
-    const [l10Weight, setL10Weight] = useState(1.4)
-    const [homeAwayWeight, setHomeAwayWeight] = useState(1.3)
-    const [handedWeight, setHandedWeight] = useState(1.2)
-    const [overallWeight, setOverallWeight] = useState(0.1)
+    const [date, setDate] = useState(dayjs('2024-08-01'))
+    const [diffWeight, setDiffWeight] = useState(defaultDiffWeight)
+    const [l10Weight, setL10Weight] = useState(defaultL10Weight)
+    const [homeAwayWeight, setHomeAwayWeight] = useState(defaultHomeAwayWeight)
+    const [handedWeight, setHandedWeight] = useState(defaultHandedWeight)
+    const [overallWeight, setOverallWeight] = useState(defaultOverallWeight)
 
     const fetchData = async () => {
         setLoading(true)
+        setCards([])
         try {
-            const res = await api.get("prediction?date=2024-08-01&diff_weight=1.5&l10_weight=1.4&home_away_weight=1.3&handed_weight=1.2&overall_weight=0.1")
+            const res = await api.get(`prediction?date=${date.format(dateFormat)}&diff_weight=${diffWeight}&l10_weight=${l10Weight}&home_away_weight=${homeAwayWeight}&handed_weight=${handedWeight}&overall_weight=${overallWeight}`)
             console.table(res.data)
-            console.log('res.data is array', Array.isArray(res.data))
             setCards(res.data)
         } catch (error) {
             alert(error)
@@ -32,28 +40,41 @@ function Dashboard() {
     }
     const getCardRows = function () {
         let tmp = Array.from(cards)
+        if (tmp.length % 3 === 2) tmp.push({ gameID: 'fake' })
         let ret = []
         while (tmp.length) ret.push(tmp.splice(0, 3))
+
+        console.log(`[getCardRows] is ${ret.length}`)
         return ret
     }
+    const handleDateChange = function (newVal) {
+        console.log(`[handleDateChange] ${newVal}`)
+        setDate(newVal)
+    }
+
     return (
         <div className="dashboard">
             <h1>Dashboard</h1>
+            <div className="datePicker">
+                <DatePicker onChange={handleDateChange} date={date} />
+            </div>
             <button onClick={fetchData}>Fetch Data</button>
             {isLoading && <LoadingIndicator />}
             <div className="cards-container flex flex-wrap flex-justify-between flex-column">
-                {getCardRows().map((row, rIdx) => {
-                    console.log('ridx', rIdx)
-                    const isLastRow = rIdx === row.length - 1
-                    const rowClassName = isLastRow ? "card-row last flex flex-justify-start" : "card-row flex flex-justify-between"
-                    return (
-                        <div className={rowClassName} key={rIdx} >
-                            {row.map((card, cIdx) => {
-                                return <Card key={cIdx} index={cIdx + 1} isLast={cIdx === row.length - 1} data={card} />
-                            })}
-                        </div>
-                    )
-                })}
+                {
+                    getCardRows().map((row, rIdx) => {
+                        console.log('ridx', rIdx)
+                        const isLastRow = rIdx === getCardRows().length - 1
+                        const rowClassName = isLastRow ? "card-row last flex flex-justify-between" : "card-row flex flex-justify-between"
+                        return (
+                            <div className={rowClassName} key={rIdx} >
+                                {row.map((card, cIdx) => {
+                                    return <Card key={cIdx} index={cIdx + 1} isLast={cIdx === row.length - 1} data={card} />
+                                })}
+                            </div>
+                        )
+                    })
+                }
             </div>
         </div>
     )

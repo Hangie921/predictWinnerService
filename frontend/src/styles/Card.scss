@@ -6,14 +6,13 @@ $card_header_background_color: #f7f7f7;
     // background-color: $color_main_background;
     border: $card_border_width solid $color_card_border;
     flex-basis: 32%;
-    margin-left: 0;
-    margin-right: 0;
+    // margin-left: 0;
+    // margin-right: 0;
     color: $font_color_main;
 }
 
-.card-row.last .card:last-child {
-    margin-left: 2%;
-    margin-right: auto;
+.card.no_border {
+    border: none;
 }
 
 .card__label {
@@ -71,6 +70,7 @@ $card_header_background_color: #f7f7f7;
     .starter__label {
         flex-basis: 30%;
         font-weight: $font_weight_bold;
+        margin-bottom: 0.5rem;
     }
 
     .starter__value {

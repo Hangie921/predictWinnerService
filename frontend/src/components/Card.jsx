@@ -101,10 +101,9 @@ const GAME_JSON = {
     }
 }
 
-function Card(props) {
-    console.log('data', props.data)
-    const match = props.data
-    // const match = GAME_JSON
+function Card({ data }) {
+    const match = data
+    if (match.gameID === 'fake') return (<div className="card no_border"></div>)
 
     function round(from) {
         return Math.round(from * 1000) / 1000
@@ -143,13 +142,13 @@ function Card(props) {
                     <span>{homeWins}-{homeLosses}</span>
                 </div>
                 <div className="card__value">
-                    <span>{round(homeWins / homeLosses)}</span>
+                    <span>{round(homeWins / (homeWins + homeLosses))}</span>
                 </div>
                 <div className="card__value">
                     <span>{awayWins}-{awayLosses}</span>
                 </div>
                 <div className="card__value">
-                    <span>{round(awayWins / awayLosses)}</span>
+                    <span>{round(awayWins / (awayWins + awayLosses))}</span>
                 </div>
             </div>
         )
@@ -177,8 +176,8 @@ function Card(props) {
                 <span className="team__away">{match.awayTeam.name}</span>
             </div>
             <div className="card__power flex flex-justify-between">
-                <span className="power_home">11{match.homeTeam.power}</span>
-                <span className="power_away">22{match.awayTeam.power}</span>
+                <span className="power_home">{round(match.homeTeam.power)}</span>
+                <span className="power_away">{round(match.awayTeam.power)}</span>
             </div>
             <div className="card__starter">
                 <div className="">
@@ -231,13 +230,13 @@ function Card(props) {
                         <span>{match.homeTeam.overallWins}-{match.homeTeam.overallLosses}</span>
                     </div>
                     <div className="card__value">
-                        <span>{round(match.homeTeam.overallWins / match.homeTeam.overallLosses)}</span>
+                        <span>{round(match.homeTeam.overallWins / (match.homeTeam.overallWins + match.homeTeam.overallLosses))}</span>
                     </div>
                     <div className="card__value">
                         <span>{match.awayTeam.overallWins}-{match.awayTeam.overallLosses}</span>
                     </div>
                     <div className="card__value">
-                        <span>{round(match.awayTeam.overallWins / match.awayTeam.overallLosses)}</span>
+                        <span>{round(match.awayTeam.overallWins / (match.awayTeam.overallWins + match.awayTeam.overallLosses))}</span>
                     </div>
                 </div>
             </div>
@@ -250,13 +249,13 @@ function Card(props) {
                         <span>{match.homeTeam.homeWins}-{match.homeTeam.homeLosses}</span>
                     </div>
                     <div className="card__value">
-                        <span>{round(match.homeTeam.homeWins / match.homeTeam.homeLosses)}</span>
+                        <span>{round(match.homeTeam.homeWins / (match.homeTeam.homeWins + match.homeTeam.homeLosses))}</span>
                     </div>
                     <div className="card__value">
                         <span>{match.awayTeam.awayWins}-{match.awayTeam.awayLosses}</span>
                     </div>
                     <div className="card__value">
-                        <span>{round(match.awayTeam.awayWins / match.awayTeam.awayLosses)}</span>
+                        <span>{round(match.awayTeam.awayWins / (match.awayTeam.awayWins + match.awayTeam.awayLosses))}</span>
                     </div>
                 </div>
             </div>
