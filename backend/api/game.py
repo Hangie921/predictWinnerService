@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import UserSerializer,WeightSerializer,GameSerializer
 from django.http import JsonResponse, HttpResponse
 from . import const 
+from crawl_mlb import execution
 
 def calculate_power(home_team, away_team, home_starter, away_starter, diff_weight, home_away_weight, handed_weight, overall_weight, l10_weight):
     home_power = 0
@@ -62,7 +63,7 @@ def calculate_power(home_team, away_team, home_starter, away_starter, diff_weigh
     return home_power, away_power
 
 def compare_power(ele):
-    return ele["winningPointDiff"]
+    return ele["_winningPointDiff"]
 
 def get_prediction(request):
     # prediction?date=2024-08-01&diff_weight=1.5&l10_weight=1.4&home_away_weight=1.3&handed_weight=1.2&overall_weight=0.1
@@ -77,11 +78,15 @@ def get_prediction(request):
         games = Game.objects.filter(game_date=request.GET.get('date'))
         
         if len(games) == 0:
-            return JsonResponse({"message": "No games data for this date yet"})
-        
+            execution.fetch_data_to_db(request.GET.get('date'))
+            games = Game.objects.filter(game_date=request.GET.get('date'))
+            if len(games) == 0:
+                return JsonResponse({"message": "No games data for this date yet"})
+
         detailed_games = []
         for game in games:
             # Get team stats
+            
             home_team_stats = TeamStat.objects.filter(t_id=game.home_team_id, stat_date=request.GET.get('date')).first()
             away_team_stats = TeamStat.objects.filter(t_id=game.away_team_id, stat_date=request.GET.get('date')).first()
             home_team = Team.objects.filter(t_id=game.home_team_id).first()
@@ -103,7 +108,8 @@ def get_prediction(request):
                                                                request.GET.get('l_10_weight'))
             winning_point_diff = abs(home_team_power-away_team_power)
             game_detail = {
-                "winningPointDiff": winning_point_diff,
+                "_isHomeTeamWin": game.is_winner_home_team,
+                "_winningPointDiff": winning_point_diff,
                 const.GAME_GAME_ID_JSON_KEY: game.game_pk,
                 const.GAME_GAME_DATE_JSON_KEY: game.game_date,
                 const.GAME_HOME_TEAM_JSON_KEY: {
@@ -167,19 +173,3 @@ def get_prediction(request):
         return JsonResponse(detailed_games, safe=False)
     return JsonResponse({"error": "Invalid request method"}, status=400)
 
-
-# def get_prediction(request):
-
-#     print("diff_weight is", request.GET.get('diff_weight'))
-#     print("date is", request.GET.get('date'))
-#     if request.META["REQUEST_METHOD"] == "GET":
-#         # return JsonResponse({"prediction": "This is a prediction"})
-#         games = Game.objects.filter(game_date=request.GET.get('date'))
-#         print("len", len(games))
-#         if len(games) == 0:
-#             return JsonResponse({"prediction": "No games data for this date yet"})
-#             # return HttpResponse(status=204)
-#         serializer = GameSerializer(games, many=True)
-#         print("typeof", type(serializer.data))
-#         return JsonResponse(serializer.data, safe=False)
-    

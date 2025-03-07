@@ -5,3 +5,5 @@ djangorestframework
 djangorestframework-simplejwt
 djangorestframework-camel-case
 psycopg2
+beautifulsoup4
+requests
