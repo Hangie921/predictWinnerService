@@ -1,14 +1,49 @@
 .cards-container {
-    background-color: #fff;
-    max-width: 1284px;
-    width: 100%;
-    // padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
     padding: 1rem;
+}
+
+.dashboard {
+    padding: 1rem;
+    background-color: #fff;
+    margin-right: auto;
+    margin-left: auto;
+    width: 100%;
+    max-width: 1284px;
     position: relative;
 }
 
 .card-row {
     margin-bottom: 1rem;
+}
+
+.parameter-section {
+    // flex: 1 2;
+}
+
+.date-picker-section {
+    flex: 1 1 20%;
+
+    & input {
+        padding: 6px 8px;
+        padding-right: 0;
+    }
+}
+
+.weight-input-section {
+    flex: 1 1 80%;
+}
+
+.weight-input {
+    flex-basis: 15%;
+
+    &>p {
+        margin: 8px 8px;
+        margin-left: 0;
+        font-size: 14px;
+        line-height: normal;
+    }
+
+    & input {
+        max-width: 50px;
+    }
 }

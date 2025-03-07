@@ -101,6 +101,11 @@ const GAME_JSON = {
     }
 }
 
+const winningOptOverall = 0
+const winningOptLast10 = 1
+const winningOptHomeAway = 2
+
+
 function Card({ data }) {
     const match = data
     if (match.gameID === 'fake') return (<div className="card no_border"></div>)
@@ -111,6 +116,91 @@ function Card({ data }) {
 
     function calculateWinning(win, loss) {
         return round(win / loss)
+    }
+
+    function getNormalWinning(whichWeight, homeTeam, awayTeam) {
+        let containerClassName = ""
+        let labelName = ""
+        let homeWins = 0
+        let homeLosses = 0
+        let awayWins = 0
+        let awayLosses = 0
+
+        switch (whichWeight) {
+            case winningOptHomeAway:
+                containerClassName = "card__home_away"
+                labelName = "Home/Away"
+                homeWins = homeTeam.homeWins
+                homeLosses = homeTeam.homeLosses
+                awayWins = awayTeam.awayWins
+                awayLosses = awayTeam.awayLosses
+                break
+            case winningOptLast10:
+                containerClassName = "card__l10"
+                labelName = "Last 10"
+                homeWins = homeTeam.l10Wins
+                homeLosses = homeTeam.l10Losses
+                awayWins = awayTeam.l10Wins
+                awayLosses = awayTeam.l10Losses
+                break
+            case winningOptOverall:
+                containerClassName = "card__overall"
+                labelName = "Overall"
+                homeWins = homeTeam.overallWins
+                homeLosses = homeTeam.overallLosses
+                awayWins = awayTeam.overallWins
+                awayLosses = awayTeam.overallLosses
+                break
+            default:
+                console.error('not supported')
+        }
+        return (
+            <div className={containerClassName + " flex"}>
+                <div className="card__label">
+                    <span>{labelName}</span>
+                </div>
+                <div className="card__value">
+                    <span>{homeWins}-{homeLosses}</span>
+                </div>
+                <div className="card__value">
+                    <span>{round(homeWins / (homeWins + homeLosses))}</span>
+                </div>
+                <div className="card__value">
+                    <span>{awayWins}-{awayLosses}</span>
+                </div>
+                <div className="card__value">
+                    <span>{round(awayWins / (awayWins + awayLosses))}</span>
+                </div>
+            </div>
+        )
+
+    }
+
+    function getLast10Winning(home, away) {
+        let homeWins = home.l10Wins
+        let homeLosses = home.l10Losses
+        let awayWins = away.l10Wins
+        let awayLosses = away.l10Losses
+
+        return (
+            <div className="card__l10 flex">
+                <div className="card__label">
+                    <span>Last 10</span>
+                </div>
+                <div className="card__value">
+                    <span>{homeWins}-{homeLosses}</span>
+                </div>
+                <div className="card__value">
+                    <span>{round(homeWins / (homeWins + homeLosses))}</span>
+                </div>
+                <div className="card__value">
+                    <span>{awayWins}-{awayLosses}</span>
+                </div>
+                <div className="card__value">
+                    <span>{round(awayWins / (awayWins + awayLosses))}</span>
+                </div>
+            </div>
+        )
     }
 
     function getHandedWinning(home, away) {
@@ -134,7 +224,7 @@ function Card({ data }) {
             awayLosses = away.rHandedLosses
         }
         return (
-            <div className="handed flex">
+            <div className="card__handed flex">
                 <div className="card__label">
                     <span>Handed</span>
                 </div>
@@ -156,7 +246,7 @@ function Card({ data }) {
 
     function getStreakWinning(home, away) {
         return (
-            <div className="streak flex">
+            <div className="card__streak flex">
                 <div className="card__label">
                     <span>Streak</span>
                 </div>
@@ -221,50 +311,11 @@ function Card({ data }) {
                     <span>Away</span>
                 </div>
             </div>
-            <div className="card__overall">
-                <div className="overall flex">
-                    <div className="card__label">
-                        <span>Overall</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{match.homeTeam.overallWins}-{match.homeTeam.overallLosses}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{round(match.homeTeam.overallWins / (match.homeTeam.overallWins + match.homeTeam.overallLosses))}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{match.awayTeam.overallWins}-{match.awayTeam.overallLosses}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{round(match.awayTeam.overallWins / (match.awayTeam.overallWins + match.awayTeam.overallLosses))}</span>
-                    </div>
-                </div>
-            </div>
-            <div className="card__home__away">
-                <div className="home_away flex">
-                    <div className="card__label">
-                        <span>Home/Away</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{match.homeTeam.homeWins}-{match.homeTeam.homeLosses}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{round(match.homeTeam.homeWins / (match.homeTeam.homeWins + match.homeTeam.homeLosses))}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{match.awayTeam.awayWins}-{match.awayTeam.awayLosses}</span>
-                    </div>
-                    <div className="card__value">
-                        <span>{round(match.awayTeam.awayWins / (match.awayTeam.awayWins + match.awayTeam.awayLosses))}</span>
-                    </div>
-                </div>
-            </div>
-            <div className="card__handed">
-                {getHandedWinning(match.homeTeam, match.awayTeam)}
-            </div>
-            <div className="card__streak">
-                {getStreakWinning(match.homeTeam, match.awayTeam)}
-            </div>
+            {getNormalWinning(winningOptOverall, match.homeTeam, match.awayTeam)}
+            {getNormalWinning(winningOptHomeAway, match.homeTeam, match.awayTeam)}
+            {getHandedWinning(match.homeTeam, match.awayTeam)}
+            {getNormalWinning(winningOptLast10, match.homeTeam, match.awayTeam)}
+            {getStreakWinning(match.homeTeam, match.awayTeam)}
             <div className="card__diff">
                 <div className="diff flex">
                     <div className="card__label">

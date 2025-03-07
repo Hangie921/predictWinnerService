@@ -1,10 +1,9 @@
+import NumberInput from './NumberInput'
 import { useState } from "react";
 import api from '../api'
-// import { useNavigate } from "react-router-dom";
 import LoadingIndicator from "./LoadingIndicator";
 import "../styles/Dashboard.scss"
 import Card from "./Card";
-// import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import DatePicker from "./DatePicker"
 import dayjs from "dayjs"
 
@@ -25,6 +24,28 @@ function Dashboard() {
     const [handedWeight, setHandedWeight] = useState(defaultHandedWeight)
     const [overallWeight, setOverallWeight] = useState(defaultOverallWeight)
 
+    const weights = [{
+        "name": 'Overall Weight',
+        "setFunction": setOverallWeight,
+        "defaultValue": defaultOverallWeight,
+    }, {
+        "name": 'Home/Away Weight',
+        "setFunction": setHomeAwayWeight,
+        "defaultValue": defaultHomeAwayWeight,
+    }, {
+        "name": 'Handed Weight',
+        "setFunction": setHandedWeight,
+        "defaultValue": defaultHandedWeight,
+    }, {
+        "name": 'Last 10 Weight',
+        "setFunction": setL10Weight,
+        "defaultValue": defaultL10Weight,
+    }, {
+        "name": 'Diff Weight',
+        "setFunction": setDiffWeight,
+        "defaultValue": defaultDiffWeight,
+    }]
+
     const fetchData = async () => {
         setLoading(true)
         setCards([])
@@ -43,29 +64,40 @@ function Dashboard() {
         if (tmp.length % 3 === 2) tmp.push({ gameID: 'fake' })
         let ret = []
         while (tmp.length) ret.push(tmp.splice(0, 3))
-
-        console.log(`[getCardRows] is ${ret.length}`)
         return ret
-    }
-    const handleDateChange = function (newVal) {
-        console.log(`[handleDateChange] ${newVal}`)
-        setDate(newVal)
     }
 
     return (
         <div className="dashboard">
-            <h1>Dashboard</h1>
-            <div className="datePicker">
-                <DatePicker onChange={handleDateChange} date={date} />
+            <h1>Predict the Winner</h1>
+            <div className="parameter-section flex flex-justify-between">
+                <div className="date-picker-section">
+                    <DatePicker onChange={(newVal) => { setDate(newVal) }} date={date} />
+                </div>
+                <div className="weight-input-section flex flex-justify-between">
+                    {
+                        weights.map((weight, wIdx) => {
+                            return (
+                                <NumberInput
+                                    className="flex weight-input flex-column"
+                                    name={weight.name}
+                                    defaultValue={weight.defaultValue}
+                                    onValueChange={weight.setFunction}
+                                    key={wIdx}
+                                />
+                            )
+                        })
+                    }
+                </div>
             </div>
-            <button onClick={fetchData}>Fetch Data</button>
+            <button onClick={fetchData}>Get the result</button>
             {isLoading && <LoadingIndicator />}
             <div className="cards-container flex flex-wrap flex-justify-between flex-column">
                 {
                     getCardRows().map((row, rIdx) => {
                         console.log('ridx', rIdx)
                         const isLastRow = rIdx === getCardRows().length - 1
-                        const rowClassName = isLastRow ? "card-row last flex flex-justify-between" : "card-row flex flex-justify-between"
+                        const rowClassName = isLastRow ? "card-row flex flex-justify-between" : "card-row flex flex-justify-between"
                         return (
                             <div className={rowClassName} key={rIdx} >
                                 {row.map((card, cIdx) => {

@@ -27,7 +27,7 @@ $card_header_background_color: #f7f7f7;
 }
 
 .card__overall,
-.card__home__away,
+.card__home_away,
 .card__handed,
 .card__l10 {
     padding: 0.5rem 1rem 0.2rem 1rem;
@@ -68,13 +68,13 @@ $card_header_background_color: #f7f7f7;
     padding: 0.5rem 1rem 0.2rem 1rem;
 
     .starter__label {
-        flex-basis: 30%;
+        flex-basis: 33%;
         font-weight: $font_weight_bold;
         margin-bottom: 0.5rem;
     }
 
     .starter__value {
-        flex-basis: 70%;
+        flex-basis: 67%;
         color: $font_color_secondary;
 
         &.starter__name {
