@@ -3,21 +3,45 @@ import { useState } from "react";
 import api from '../api'
 import LoadingIndicator from "./LoadingIndicator";
 import "../styles/Dashboard.scss"
+import "../styles/Button.scss"
 import Card from "./Card";
 import DatePicker from "./DatePicker"
 import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone"
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
+const easternTimeZone = "America/New_York"
 const dateFormat = "YYYY-MM-DD"
 const defaultDiffWeight = 1
 const defaultL10Weight = 1
 const defaultHomeAwayWeight = 1
 const defaultHandedWeight = 1
 const defaultOverallWeight = 1
+const defaultDateValue = "2024-08-01"
+
+let minDate = dayjs.tz('2024-01-01', easternTimeZone)
+let maxDate = dayjs.tz('2025-12-31', easternTimeZone)
+
+const fetchSupportedDate = async () => {
+    try {
+        const res = await api.get(`supportedDate`)
+        console.log('res', res)
+        minDate = dayjs(res.data[0].startDate)
+        maxDate = dayjs(res.data[0].endDate)
+    } catch (error) {
+        alert(error)
+    } finally {
+        // setLoading(false)
+    }
+}
+fetchSupportedDate()
 
 function Dashboard() {
     const [cards, setCards] = useState([])
     const [isLoading, setLoading] = useState(false)
-    const [date, setDate] = useState(dayjs('2024-08-01'))
+    const [date, setDate] = useState(dayjs.tz(defaultDateValue, easternTimeZone))
     const [diffWeight, setDiffWeight] = useState(defaultDiffWeight)
     const [l10Weight, setL10Weight] = useState(defaultL10Weight)
     const [homeAwayWeight, setHomeAwayWeight] = useState(defaultHomeAwayWeight)
@@ -46,6 +70,7 @@ function Dashboard() {
         "defaultValue": defaultDiffWeight,
     }]
 
+
     const fetchData = async () => {
         setLoading(true)
         setCards([])
@@ -72,7 +97,15 @@ function Dashboard() {
             <h1>Predict the Winner</h1>
             <div className="parameter-section flex flex-justify-between">
                 <div className="date-picker-section">
-                    <DatePicker onChange={(newVal) => { setDate(newVal) }} date={date} />
+                    {/* <span>
+                        {date.toString()}
+                    </span> */}
+                    <DatePicker
+                        date={date}
+                        onChange={(newVal) => { setDate(newVal) }}
+                        minDate={minDate}
+                        maxDate={maxDate}
+                    />
                 </div>
                 <div className="weight-input-section flex flex-justify-between">
                     {
@@ -90,7 +123,7 @@ function Dashboard() {
                     }
                 </div>
             </div>
-            <button onClick={fetchData}>Get the result</button>
+            <button className="btn" onClick={fetchData}>Get the result</button>
             {isLoading && <LoadingIndicator />}
             <div className="cards-container flex flex-wrap flex-justify-between flex-column">
                 {

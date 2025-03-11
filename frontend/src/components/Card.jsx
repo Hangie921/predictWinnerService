@@ -105,6 +105,9 @@ const winningOptOverall = 0
 const winningOptLast10 = 1
 const winningOptHomeAway = 2
 
+function getTeamLogoURL(id) {
+    return `https://www.mlbstatic.com/team-logos/${id}.svg`
+}
 
 function Card({ data }) {
     const match = data
@@ -115,7 +118,7 @@ function Card({ data }) {
     }
 
     function calculateWinning(win, loss) {
-        return round(win / loss)
+        return round(win / (loss + win))
     }
 
     function getNormalWinning(whichWeight, homeTeam, awayTeam) {
@@ -163,13 +166,13 @@ function Card({ data }) {
                     <span>{homeWins}-{homeLosses}</span>
                 </div>
                 <div className="card__value">
-                    <span>{round(homeWins / (homeWins + homeLosses))}</span>
+                    <span>{calculateWinning(homeWins, homeLosses)}</span>
                 </div>
                 <div className="card__value">
                     <span>{awayWins}-{awayLosses}</span>
                 </div>
                 <div className="card__value">
-                    <span>{round(awayWins / (awayWins + awayLosses))}</span>
+                    <span>{calculateWinning(awayWins, awayLosses)}</span>
                 </div>
             </div>
         )
@@ -191,13 +194,13 @@ function Card({ data }) {
                     <span>{homeWins}-{homeLosses}</span>
                 </div>
                 <div className="card__value">
-                    <span>{round(homeWins / (homeWins + homeLosses))}</span>
+                    <span>{calculateWinning(homeWins, homeLosses)}</span>
                 </div>
                 <div className="card__value">
                     <span>{awayWins}-{awayLosses}</span>
                 </div>
                 <div className="card__value">
-                    <span>{round(awayWins / (awayWins + awayLosses))}</span>
+                    <span>{calculateWinning(awayWins, awayLosses)}</span>
                 </div>
             </div>
         )
@@ -232,13 +235,13 @@ function Card({ data }) {
                     <span>{homeWins}-{homeLosses}</span>
                 </div>
                 <div className="card__value">
-                    <span>{round(homeWins / (homeWins + homeLosses))}</span>
+                    <span>{calculateWinning(homeWins, homeLosses)}</span>
                 </div>
                 <div className="card__value">
                     <span>{awayWins}-{awayLosses}</span>
                 </div>
                 <div className="card__value">
-                    <span>{round(awayWins / (awayWins + awayLosses))}</span>
+                    <span>{calculateWinning(awayWins, awayLosses)}</span>
                 </div>
             </div>
         )
@@ -261,9 +264,15 @@ function Card({ data }) {
     }
     return (
         <div className="card">
-            <div className="card__team flex flex-justify-between">
-                <span className="team__home">{match.homeTeam.name}</span>
-                <span className="team__away">{match.awayTeam.name}</span>
+            <div className="card__team">
+                <div className="name__row flex flex-justify-between">
+                    <span className="team__home">{match.homeTeam.name}</span>
+                    <span className="team__away">{match.awayTeam.name}</span>
+                </div>
+                <div className="logo__row flex flex-justify-between">
+                    <img src={getTeamLogoURL(match.homeTeam.teamID)} alt="" />
+                    <img src={getTeamLogoURL(match.awayTeam.teamID)} alt="" />
+                </div>
             </div>
             <div className="card__power flex flex-justify-between">
                 <span className="power_home">{round(match.homeTeam.power)}</span>

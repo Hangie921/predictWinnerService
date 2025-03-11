@@ -81,7 +81,6 @@ $card_header_background_color: #f7f7f7;
             color: $font_color_main;
         }
 
-
         & span {
             flex-basis: 32%;
         }
@@ -94,10 +93,19 @@ $card_header_background_color: #f7f7f7;
     font-weight: $font_weight_bold;
     padding: 0.5rem 1rem 0.2rem 1rem;
     background-color: $card_header_background_color;
+
+    & .logo__row {
+        margin-top: 0.5rem;
+
+        & img {
+            width: 2rem;
+            height: 2rem;
+        }
+    }
 }
 
 .card__power {
-    padding: 0.5rem 1rem 0.2rem 1rem;
+    padding: 0.5rem 1rem;
     background-color: $card_header_background_color;
     font-size: 1.2rem;
 }
