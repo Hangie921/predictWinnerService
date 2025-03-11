@@ -45,7 +45,7 @@ bullpen_stats_url = (
 
 standings_api_url = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&standingsTypes=regularSeason&season="
 # standings_api_url example: https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season=2024&standingsTypes=regularSeason&date=2024-08-30
-standings_api_url_with_date = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season=2022&standingsTypes=regularSeason&date=2022-10-03"
+# standings_api_url_with_date = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season=2022&standingsTypes=regularSeason&date=2022-10-03"
 history_standings_api_url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1&leagueId=103,104&hydrate=team,linescore,flags,liveLookin,review&useLatestGames=false&language=en&date="
 history_standings_api_url_with_date = "https://statsapi.mlb.com/api/v1/schedule?sportId=1&leagueId=103,104&hydrate=team,linescore,flags,liveLookin,review&useLatestGames=false&language=en&date=2024-08-30"
 
@@ -67,15 +67,20 @@ def QueryDataFromRequest(url):
 
 # 包裝函式
 def GetContent(format, filter_items, date_string):
+    now = datetime.datetime.now()
+    target_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
     is_current = False
-    if date_string == "":
+
+    if now.date() == target_date.date():
         is_current = True
+    if is_current is False:
+        now = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+
     if "diff" not in filter_items:
         return "filter required"
-    if is_current:
-        now = datetime.datetime.now()
-    else:
-        now = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+    print("is_current ", is_current)
+    print("now is ", now)    
+
     current_year = now.strftime("%Y")
     current_time = now.strftime("%Y-%m-%d")
     next_day = now + datetime.timedelta(days=1)
@@ -94,6 +99,7 @@ def GetContent(format, filter_items, date_string):
     history_standings = {}
     if is_current is False:
         history = QueryDataFromRequest(history_standings_api_url + current_time)
+        print("history is", history)
         tmp = json.loads(history, object_hook=lambda d: SimpleNamespace(**d))
         if len(tmp.dates) > 0 :
             history_standings = tmp.dates[0]
@@ -255,7 +261,9 @@ def GetContent(format, filter_items, date_string):
                             m.winner_team_id = game.teams.home.team.id
                             m.loser_team_id = game.teams.away.team.id
             starter_index += 1
-        if m.status.detailed_state != "Postponed":
+        print("m.status", m.status)
+        print("m", m)
+        if hasattr(m.status, "detailed_state") is False or m.status.detailed_state != "Postponed":
             m.compare_all_item()
             final_matches.append(m)
     final_matches.sort(key=sortMatch, reverse=True)

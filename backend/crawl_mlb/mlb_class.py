@@ -1,3 +1,4 @@
+import datetime
 """mlb_class is the module that contains all class from MLB.com"""
 
 # const
@@ -5,6 +6,28 @@ DIFF_WIN_POINT_WEIGHTS = 1.5
 L10_WIN_POINT_WEIGHTS = 1.1
 GENERAL_WEIGHTS = 1
 
+
+spring_training_start_date_2024 = "2024-02-23"
+spring_training_end_date_2024= "2024-03-26"
+spring_training_start_date_2024 = "2025-02-21"
+spring_training_end_date_2024= "2025-03-26"
+
+regular_season_start_date_2024 = "2024-03-20"
+regular_season_end_date_2024= "2024-09-30"
+regular_season_start_date_2025 = "2025-03-18"
+regular_season_end_date_2025= "2024-09-30"
+
+
+class GameDate():
+    def __init__(self, start:str, end:str):
+        self.start_date = start
+        self.end_date = end
+    
+    def get_start_date(self):
+        return datetime.datetime.strptime(self.start_date, "%Y-%m-%d")
+    
+    def get_end_date(self):
+        return datetime.datetime.strptime(self.end_date, "%Y-%m-%d")
 
 def fill_string(target: str, which: str, length: int):
     while len(target) <= length:
@@ -180,10 +203,8 @@ class Match:
 
     def compare_all_item(self):
         # diff
-        print("compare_all_item", self.status.detailed_state)
+        print("compare_all_item", self.status)
         if self.filter.item["diff"]:
-            print("home diff is", self.home_team.diff)
-            print("away diff is", self.away_team.diff)
             if self.home_team.diff > self.away_team.diff:
                 self.home_team.win_points += DIFF_WIN_POINT_WEIGHTS
             elif self.away_team.diff > self.home_team.diff:

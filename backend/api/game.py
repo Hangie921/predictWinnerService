@@ -65,6 +65,16 @@ def calculate_power(home_team, away_team, home_starter, away_starter, diff_weigh
 def compare_power(ele):
     return ele["_winningPointDiff"]
 
+def get_supported_date(request):
+    ret = [{
+        "year": 2024,
+        "type": "regularSeason",
+        "startDate": "2024-03-20",
+        "endDate": "2024-09-30",
+    }]
+    return JsonResponse(ret, safe=False)
+
+
 def get_prediction(request):
     # prediction?date=2024-08-01&diff_weight=1.5&l10_weight=1.4&home_away_weight=1.3&handed_weight=1.2&overall_weight=0.1
     if request.META["REQUEST_METHOD"] == "GET":
@@ -113,6 +123,7 @@ def get_prediction(request):
                 const.GAME_GAME_ID_JSON_KEY: game.game_pk,
                 const.GAME_GAME_DATE_JSON_KEY: game.game_date,
                 const.GAME_HOME_TEAM_JSON_KEY: {
+                    const.GAME_TEAM_ID: home_team.t_id,
                     const.GAME_NAME_JSON_KEY: home_team.t_name,
                     const.GAME_OVERALL_WINS_JSON_KEY: home_team_stats.overall_wins if home_team_stats is not None else 0,
                     const.GAME_OVERALL_LOSS_JSON_KEY: home_team_stats.overall_losses if home_team_stats is not None else 0,
@@ -140,6 +151,7 @@ def get_prediction(request):
                     const.GAME_POWER: home_team_power
                 },
                 const.GAME_AWAY_TEAM_JSON_KEY: {
+                    const.GAME_TEAM_ID: away_team.t_id,
                     const.GAME_NAME_JSON_KEY: away_team.t_name,
                     const.GAME_OVERALL_WINS_JSON_KEY: away_team_stats.overall_wins if away_team_stats is not None else 0,
                     const.GAME_OVERALL_LOSS_JSON_KEY: away_team_stats.overall_losses if away_team_stats is not None else 0,
