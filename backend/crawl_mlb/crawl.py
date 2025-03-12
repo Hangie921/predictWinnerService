@@ -99,7 +99,6 @@ def GetContent(format, filter_items, date_string):
     history_standings = {}
     if is_current is False:
         history = QueryDataFromRequest(history_standings_api_url + current_time)
-        print("history is", history)
         tmp = json.loads(history, object_hook=lambda d: SimpleNamespace(**d))
         if len(tmp.dates) > 0 :
             history_standings = tmp.dates[0]
@@ -261,8 +260,6 @@ def GetContent(format, filter_items, date_string):
                             m.winner_team_id = game.teams.home.team.id
                             m.loser_team_id = game.teams.away.team.id
             starter_index += 1
-        print("m.status", m.status)
-        print("m", m)
         if hasattr(m.status, "detailed_state") is False or m.status.detailed_state != "Postponed":
             m.compare_all_item()
             final_matches.append(m)

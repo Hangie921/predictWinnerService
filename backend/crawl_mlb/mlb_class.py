@@ -203,7 +203,6 @@ class Match:
 
     def compare_all_item(self):
         # diff
-        print("compare_all_item", self.status)
         if self.filter.item["diff"]:
             if self.home_team.diff > self.away_team.diff:
                 self.home_team.win_points += DIFF_WIN_POINT_WEIGHTS
