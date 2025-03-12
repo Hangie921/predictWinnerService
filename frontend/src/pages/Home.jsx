@@ -1,11 +1,10 @@
-import Header from "../components/Header"
 import Dashboard from "../components/Dashboard"
 
 function Home() {
   return (
     <div>
-      <Header />
-      <Dashboard />
+      <h1 className="page-title">Predict the Winner</h1>
+      <Dashboard page="home" />
     </div>
   )
 }

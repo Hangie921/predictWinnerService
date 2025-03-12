@@ -1,10 +1,11 @@
-import Header from "../components/Header"
+import "../styles/BackTest.scss"
+import Dashboard from "../components/Dashboard"
 
-function BackTest () {
+function BackTest() {
   return (
     <div>
-      <Header/>
-      <h1>BackTest</h1>
+      <h1 className="page-title">BackTest</h1>
+      <Dashboard page="backtest" />
     </div>
   )
 }

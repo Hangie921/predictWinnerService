@@ -10,6 +10,8 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import "./styles/Normalize.scss"
 import "./styles/Responsive.scss"
 import "./styles/App.scss"
+import Header from "./components/Header"
+
 
 function Logout() {
   localStorage.clear()
@@ -23,6 +25,7 @@ function RegisterAndLogout() {
 function App() {
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path="/" element={
           <ProtectedRoute>
