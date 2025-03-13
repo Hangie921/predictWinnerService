@@ -193,20 +193,26 @@ def calculate_accuracy(all_games):
     for date in all_games:
         games = all_games[date]
         for game in games:
-            if game["_isHomeTeamWin"] is True and game["home_team_power"] > game["away_team_power"]:
+            if game["_isHomeTeamWin"] is True and game["homeTeamPower"] > game["awayTeamPower"]:
                 prediction_is_accurate +=1
-            elif game["_isHomeTeamWin"] is False and game["away_team_power"] > game["home_team_power"]:
+            elif game["_isHomeTeamWin"] is False and game["awayTeamPower"] > game["homeTeamPower"]:
                 prediction_is_accurate +=1
             else:
                 prediction_is_inaccurate+=1
     return prediction_is_accurate, prediction_is_inaccurate
 
-AMOUNT_OF_THE_FIRST_FEW_GAMES= 1
+AMOUNT_OF_THE_FIRST_FEW_GAMES= 3
 
 def get_backtest(request):
     if request.META["REQUEST_METHOD"] != "GET":
         return JsonResponse({"error": "Invalid request method"}, status=400)
-    
+    print("first few", request.GET.get('first_few'))
+    amount_of_the_first_few = 0
+    if request.GET.get('first_few') != None:
+        amount_of_the_first_few = int(request.GET.get('first_few')) 
+    else:
+        amount_of_the_first_few = AMOUNT_OF_THE_FIRST_FEW_GAMES
+
     games = Game.objects.filter(game_date__gte=request.GET.get('start_date')).filter(game_date__lte=request.GET.get('end_date'))
     print("raw games", games)
 
@@ -216,6 +222,8 @@ def get_backtest(request):
     all_games = {}
     
     for game in games:
+        home_team = Team.objects.filter(t_id=game.home_team_id).first()
+        away_team = Team.objects.filter(t_id=game.away_team_id).first()
         home_team_stats = TeamStat.objects.filter(t_id=game.home_team_id, stat_date=game.game_date).first()
         away_team_stats = TeamStat.objects.filter(t_id=game.away_team_id, stat_date=game.game_date).first()
         
@@ -232,10 +240,14 @@ def get_backtest(request):
                                                                request.GET.get('l_10_weight'))
         game_detail = {
             "_isHomeTeamWin": game.is_winner_home_team,
-            "game_date": game.game_date,
-            "home_team_power": home_team_power,
-            "away_team_power": away_team_power,
-            "_winningPointDiff": abs(home_team_power-away_team_power)
+            "gameDate": game.game_date,
+            "homeTeamPower": home_team_power,
+            "awayTeamPower": away_team_power,
+            "_winningPointDiff": abs(home_team_power-away_team_power),
+            "homeTeamID": game.home_team_id,
+            "awayTeamID": game.away_team_id,
+            "homeTeamName": home_team.t_name,
+            "awayTeamName": away_team.t_name,
         }
         date_string = game.game_date.strftime("%Y-%m-%d") 
         if date_string in all_games:
@@ -247,8 +259,8 @@ def get_backtest(request):
         all_games[date_string].sort(key=compare_power, reverse=True)
     
     for date in all_games:
-        if len(all_games[date]) > AMOUNT_OF_THE_FIRST_FEW_GAMES:
-            all_games[date] = all_games[date][0:AMOUNT_OF_THE_FIRST_FEW_GAMES]
+        if len(all_games[date]) > amount_of_the_first_few:
+            all_games[date] = all_games[date][0:amount_of_the_first_few]
     print('all_games', all_games)
 
     prediction_correction, prediction_incorrection = calculate_accuracy(all_games)
@@ -257,7 +269,7 @@ def get_backtest(request):
     print(f"result {prediction_correction/(prediction_correction+prediction_incorrection)}")
     ret = {
         'predictionCorrection': prediction_correction,
-        'predictionIncorrection': prediction_incorrection,
+        'predictionInCorrection': prediction_incorrection,
         'allGamesResults': all_games,
     }
     return JsonResponse(ret, safe=False)
