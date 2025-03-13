@@ -4,7 +4,7 @@ import NumberInput from './NumberInput'
 
 function ParameterSelector(prop) {
     let { page, startDate, endDate, minDate, maxDate,
-        setStartDate, setEndDate, weights
+        setStartDate, setEndDate, weights, firstFewGameSelector
     } = prop.requirement
 
     function renderDatePicker(page) {
@@ -49,7 +49,7 @@ function ParameterSelector(prop) {
         <div className="parameter-selector">
             <div className="parameter-section flex flex-justify-between">
                 {renderDatePicker(page)}
-                <div className="weight-input-section flex flex-justify-between">
+                <div className="weight-input-section flex flex-justify-between flex-wrap">
                     {
                         weights.map((weight, wIdx) => {
                             return (
@@ -59,9 +59,27 @@ function ParameterSelector(prop) {
                                     defaultValue={weight.defaultValue}
                                     onValueChange={weight.setFunction}
                                     key={wIdx}
+                                    step={0.1}
+                                    min={0}
+                                    max={2}
                                 />
                             )
                         })
+                    }
+                    {page === 'backtest' ? firstFewGameSelector.map((which, idx) => {
+                        return (
+                            <NumberInput
+                                className="flex first-few flex-column"
+                                step={1}
+                                name={which.name}
+                                defaultValue={which.defaultValue}
+                                onValueChange={which.setFunction}
+                                key={idx}
+                                min={1}
+                                max={15}
+                            />
+                        )
+                    }) : null
                     }
                 </div>
             </div>

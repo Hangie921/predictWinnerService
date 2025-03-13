@@ -8,9 +8,9 @@ export default function NumberInput(prop) {
             <NumberField.Root name={prop.name}
                 defaultValue={parseInt(prop.defaultValue)}
                 onValueChange={(newVal) => { prop.onValueChange(newVal) }}
-                step={0.1}
-                min={0}
-                max={2}
+                step={prop.step}
+                min={prop.min}
+                max={prop.max}
             >
                 <NumberField.Group>
                     <NumberField.Decrement>

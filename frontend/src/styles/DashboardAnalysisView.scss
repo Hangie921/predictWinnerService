@@ -1,0 +1,107 @@
+@import "./Variables.scss";
+
+.analysis-container {
+    padding: 1rem 0;
+}
+
+.analysis-accuracy {
+    font-size: 16px;
+    font-weight: bold;
+    padding-bottom: 10px;
+
+
+    span {
+        border-radius: 6px;
+        padding: 2px 4px;
+        margin-left: 8px;
+        color: #333;
+    }
+
+    .good-accuracy {
+        border: 1px solid #93ff93;
+        background-color: #93ff93;
+    }
+
+    .bad-accuracy {
+        border: 1px solid #e15454;
+        background-color: #e15454;
+    }
+}
+
+.analysis-detail {
+    border: $card_border_width solid $color_card_border;
+}
+
+.analysis-detail-title {
+    border-bottom: $card_border_width solid $color_card_border;
+
+    .title {
+        flex-basis: 50%;
+        // min-width: 200px;
+        padding: 0.5rem 0;
+        text-align: center;
+
+        &:nth-child(1) {
+            border-right: $card_border_width solid $color_card_border;
+        }
+    }
+}
+
+.analysis-detail-game {
+    .row .date {
+        flex-basis: 50%;
+        border-bottom: $card_border_width solid $color_card_border;
+        border-right: $card_border_width solid $color_card_border;
+
+        span {
+            display: block;
+        }
+    }
+
+    .row .result {
+        flex-basis: 50%;
+        border-bottom: $card_border_width solid $color_card_border;
+    }
+}
+
+.game-result {
+    min-width: 600px;
+    border-bottom: $card_border_width solid $color_card_border;
+
+    .home-team,
+    .away-team,
+    .match-result {
+        flex-basis: 32%;
+
+        span {
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        line-height: 2rem;
+        vertical-align: middle;
+    }
+
+    .away-team {
+        padding-left: 5px;
+    }
+
+    img,
+    .img {
+        width: 32px;
+        height: 32px;
+    }
+
+    svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .team-name {
+        min-width: 100px;
+    }
+
+    .team-power {
+        min-width: 50px;
+    }
+}

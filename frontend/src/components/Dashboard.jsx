@@ -18,6 +18,7 @@ const defaultL10Weight = 1
 const defaultHomeAwayWeight = 1
 const defaultHandedWeight = 1
 const defaultOverallWeight = 1
+const defaultFirstFew = 1
 
 let minDate = dayjs.tz('2024-01-01', easternTimeZone)
 let maxDate = dayjs.tz('2025-12-31', easternTimeZone)
@@ -39,6 +40,7 @@ fetchSupportedDate()
 function Dashboard({ page }) {
     console.log('page', page)
     const [cards, setCards] = useState([])
+    const [firstFew, setFirstFew] = useState(defaultFirstFew)
     const [analysis, setAnalysis] = useState({})
     const [isLoading, setLoading] = useState(false)
     const [startDate, setStartDate] = useState(dayjs.tz(defaultStartDateValue, easternTimeZone))
@@ -64,10 +66,11 @@ function Dashboard({ page }) {
             }
             return
         }
+
         setLoading(true)
         setAnalysis({})
         try {
-            const res = await api.get(`backtest?start_date=${startDate.format(dateFormat)}&end_date=${endDate.format(dateFormat)}&diff_weight=${diffWeight}&l10_weight=${l10Weight}&home_away_weight=${homeAwayWeight}&handed_weight=${handedWeight}&overall_weight=${overallWeight}`)
+            const res = await api.get(`backtest?start_date=${startDate.format(dateFormat)}&end_date=${endDate.format(dateFormat)}&diff_weight=${diffWeight}&l10_weight=${l10Weight}&home_away_weight=${homeAwayWeight}&handed_weight=${handedWeight}&overall_weight=${overallWeight}&first_few=${firstFew}`)
             console.table(res.data)
             setAnalysis(res.data)
         } catch (error) {
@@ -99,6 +102,12 @@ function Dashboard({ page }) {
         "defaultValue": defaultDiffWeight,
     }]
 
+    const firstFewGameSelector = [{
+        "name": 'First few games',
+        "setFunction": setFirstFew,
+        "defaultValue": defaultFirstFew,
+    }]
+
     let parameterRequirement = {
         page,
         minDate,
@@ -106,17 +115,19 @@ function Dashboard({ page }) {
         startDate,
         endDate,
         weights,
+        firstFewGameSelector,
         setStartDate,
         setEndDate,
         setDiffWeight,
         setL10Weight,
         setHomeAwayWeight,
         setHandedWeight,
-        setOverallWeight
+        setOverallWeight,
+        setFirstFew,
     }
 
     const renderResultView = function () {
-        return page === 'home' ? (<DashboardCardView cards={cards} />) : (<DashboardAnalysisView />)
+        return page === 'home' ? (<DashboardCardView cards={cards} />) : (<DashboardAnalysisView data={analysis} firstFew={firstFew} />)
     }
 
     return (
