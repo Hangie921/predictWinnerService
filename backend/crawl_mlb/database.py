@@ -18,7 +18,7 @@ Table_name_team = "api_team"
 Table_name_team_stat = "api_teamstat"
 
 
-conn = psycopg2.connect(database=db_name, user=db_user, password=db_pass, port=db_port)
+conn = psycopg2.connect(database=db_name, user=db_user, password=db_pass, port=db_port, host=db_host)
 cursor = conn.cursor()
 
 
