@@ -1,14 +1,10 @@
-@use "./Variables.scss";
-
 $card_header_background_color: #f7f7f7;
 
 .card {
-    // background-color: $color_main_background;
     border: $card_border_width solid $color_card_border;
     flex-basis: 32%;
-    // margin-left: 0;
-    // margin-right: 0;
     color: $font_color_main;
+
 }
 
 .card.no_border {
@@ -24,6 +20,7 @@ $card_header_background_color: #f7f7f7;
 .card__value {
     flex-basis: 32%;
     color: $font_color_secondary;
+
 }
 
 .card__overall,
@@ -35,6 +32,7 @@ $card_header_background_color: #f7f7f7;
     .card__label {
         flex-basis: 33%;
         font-weight: $font_weight_bold;
+
     }
 
     .card__value {
@@ -51,6 +49,7 @@ $card_header_background_color: #f7f7f7;
     .card__label {
         flex-basis: 33%;
         font-weight: $font_weight_bold;
+
     }
 
     .card__value {
@@ -77,8 +76,10 @@ $card_header_background_color: #f7f7f7;
         flex-basis: 67%;
         color: $font_color_secondary;
 
+
         &.starter__name {
             color: $font_color_main;
+
         }
 
         & span {
@@ -93,6 +94,7 @@ $card_header_background_color: #f7f7f7;
     font-weight: $font_weight_bold;
     padding: 0.5rem 1rem 0.2rem 1rem;
     background-color: $card_header_background_color;
+
 
     & .logo__row {
         margin-top: 0.5rem;

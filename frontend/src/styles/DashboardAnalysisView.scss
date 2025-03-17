@@ -1,5 +1,3 @@
-@use "./Variables.scss";
-
 .analysis-container {
     padding: 1rem 0;
 }
@@ -30,10 +28,12 @@
 
 .analysis-detail {
     border: $card_border_width solid $color_card_border;
+
 }
 
 .analysis-detail-title {
     border-bottom: $card_border_width solid $color_card_border;
+
 
     .title {
         flex-basis: 50%;
@@ -43,6 +43,7 @@
 
         &:nth-child(1) {
             border-right: $card_border_width solid $color_card_border;
+
         }
     }
 }
