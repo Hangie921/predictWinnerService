@@ -5,7 +5,7 @@ from datetime import timedelta
 
 load_dotenv()
 
-ALLOWED_HOSTS = ['*']
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = os.getenv("DEBUG") == "True"
 SECRET_KEY = 'django'
@@ -133,3 +133,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWS_CREDENTIALS = True
+ALLOWED_HOSTS = ["3.1.101.55"]
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+
+CSRF_TRUSTED_ORIGINS = ["http://3.1.101.55"]
