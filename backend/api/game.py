@@ -213,7 +213,7 @@ def get_backtest(request):
     else:
         amount_of_the_first_few = AMOUNT_OF_THE_FIRST_FEW_GAMES
 
-    games = Game.objects.filter(game_date__gte=request.GET.get('start_date')).filter(game_date__lte=request.GET.get('end_date'))
+    games = Game.objects.filter(game_date__gte=request.GET.get('start_date')).filter(game_date__lte=request.GET.get('end_date')).order_by('game_date')
     print("raw games", games)
 
     # {
