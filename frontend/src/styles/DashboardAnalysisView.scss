@@ -68,6 +68,7 @@
 .game-result {
     min-width: 600px;
     border-bottom: $card_border_width solid $color_card_border;
+    padding: 8px 4px;
 
     .home-team,
     .away-team,
