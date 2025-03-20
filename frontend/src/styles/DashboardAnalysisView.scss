@@ -105,25 +105,24 @@ for the desktop */
     .away-team,
     .match-result {
         flex-basis: 100%;
-        @media (min-width: 1200px) {
-            flex-basis:32%;
-        }
         min-width: 200px;
-        span {
-            display: inline-block;
-            margin-left: 5px;
-        }
-
         line-height: 2rem;
         vertical-align: middle;
         align-items: center;
         justify-content: space-around;
-
         padding: 5px 0;
-        border-bottom: $card_border_width solid $color_card_border
+        border-bottom: $card_border_width solid $color_card_border;
+        
+        @media (min-width: 1200px) {
+            flex-basis:32%;
+        }
+        
+        span {
+            display: inline-block;
+            margin-left: 5px;
+        }
     }
     
-
 
     img,
     .img {
