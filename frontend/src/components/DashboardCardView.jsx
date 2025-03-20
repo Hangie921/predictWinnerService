@@ -3,7 +3,6 @@ import Card from "./Card";
 function DashboardCardView({ cards }) {
     const getCardRows = function () {
         let tmp = Array.from(cards)
-        if (tmp.length % 3 === 2) tmp.push({ gameID: 'fake' })
         let ret = []
         while (tmp.length) ret.push(tmp.splice(0, 3))
         return ret
