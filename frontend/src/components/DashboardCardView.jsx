@@ -9,17 +9,20 @@ function DashboardCardView({ cards }) {
     }
 
     return (
-        <div className="cards-container flex flex-wrap flex-justify-between flex-column">
+        <div className="cards-container">
             {
                 getCardRows().map((row, rIdx) => {
-                    console.log('ridx', rIdx)
-                    const isLastRow = rIdx === getCardRows().length - 1
-                    const rowClassName = isLastRow ? "card-row flex flex-justify-between" : "card-row flex flex-justify-between"
+                    const rowClassName = `card-row ${row.length < 3 ? 'card-row-partial' : ''}`
                     return (
-                        <div className={rowClassName} key={rIdx} >
-                            {row.map((card, cIdx) => {
-                                return <Card key={cIdx} index={cIdx + 1} isLast={cIdx === row.length - 1} data={card} />
-                            })}
+                        <div className={rowClassName} key={rIdx}>
+                            {row.map((card, cIdx) => (
+                                <div className="card-wrapper" key={cIdx}>
+                                    <Card 
+                                        index={cIdx + 1}
+                                        data={card}
+                                    />
+                                </div>
+                            ))}
                         </div>
                     )
                 })

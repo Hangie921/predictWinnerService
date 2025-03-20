@@ -1,5 +1,7 @@
 .cards-container {
     padding: 1rem 0;
+    max-width: 1284px;
+    margin: 0 auto;
 }
 
 .dashboard {
@@ -13,7 +15,24 @@
 }
 
 .card-row {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 1rem;
+    gap: 1rem;
+
+    .card-wrapper {
+        flex: 0 0 calc(33.333% - 0.667rem);
+    }
+
+    &.card-row-partial {
+        justify-content: flex-start;
+        
+        .card-wrapper {
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
 }
 
 .parameter-section {
