@@ -29,15 +29,15 @@ function getCross() {
 
 function renderPredictionResult(isPredictionCorrect, r) {
     return (
-        <div className="game-result flex">
-            <div className="home-team flex flex-align-center">
+        <div className="game-result-row flex">
+            <div className="home-team flex">
                 <div className="img">
                     <img src={getTeamLogoURL(r.homeTeamID)} alt="" />
                 </div>
                 <span className="team-name">{r.homeTeamName}</span>
                 <span className="team-power">{round(r.homeTeamPower)}</span>
             </div>
-            <div className="away-team flex flex-align-center">
+            <div className="away-team flex">
                 <div className="img">
                     <img src={getTeamLogoURL(r.awayTeamID)} alt="" />
                 </div>
@@ -84,10 +84,10 @@ function DashboardAnalysisView({ data }) {
             return ret.map((rInstance, rInstanceIdx) => {
                 return (
                     <div className="row flex" key={rInstanceIdx}>
-                        <div className="date flex flex-column flex-align-center flex-justify-center">
+                        <div className="date flex">
                             <span>{rInstance.date}</span>
                         </div>
-                        <div className="result flex flex-column">
+                        <div className="result flex">
                             {rInstance.result.map((r, rIdx) => {
                                 const isPredictionCorrect = r._isHomeTeamWin && r.homeTeamPower > r.awayTeamPower ||
                                     !r._isHomeTeamWin && r.awayTeamPower > r.homeTeamPower
@@ -101,10 +101,10 @@ function DashboardAnalysisView({ data }) {
         }
         return (
             <div className="analysis-detail">
-                <div className="analysis-detail-title flex">
+                {/* <div className="analysis-detail-title flex">
                     <div className="title">Date</div>
                     <div className="title">Result</div>
-                </div>
+                </div> */}
                 <div className="analysis-detail-game">
                     <div className="result flex flex-column">
                         {renderTheGame(data.allGamesResults)}

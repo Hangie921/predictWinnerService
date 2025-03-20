@@ -1,8 +1,16 @@
 .analysis-container {
-    padding: 1rem 0;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .analysis-accuracy {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
     font-size: 16px;
     font-weight: bold;
     padding-bottom: 10px;
@@ -28,53 +36,79 @@
 
 .analysis-detail {
     border: $card_border_width solid $color_card_border;
-
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
+
+/* styles the below component as the mobile view and then set the break point
+for the desktop */
 
 .analysis-detail-title {
     border-bottom: $card_border_width solid $color_card_border;
-
+    display: flex;
+    width: 100%;
 
     .title {
-        flex-basis: 50%;
-        // min-width: 200px;
+        flex: 1;
         padding: 0.5rem 0;
         text-align: center;
 
         &:nth-child(1) {
             border-right: $card_border_width solid $color_card_border;
-
         }
     }
 }
 
 .analysis-detail-game {
-    .row .date {
-        flex-basis: 50%;
-        border-bottom: $card_border_width solid $color_card_border;
-        border-right: $card_border_width solid $color_card_border;
-
-        span {
-            display: block;
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        @media (min-width: 1200px) {
+            flex-wrap: nowrap;
         }
-    }
+        
+        .date {
+            flex: 1 0 200px;
+            align-items: center;
+            padding: 1rem;
+            background-color:#f7f7f7;
 
-    .row .result {
-        flex-basis: 50%;
-        border-bottom: $card_border_width solid $color_card_border;
+            span {
+                display: block;
+                text-align: center;
+            }
+            border-bottom: $card_border_width solid $color_card_border;
+            justify-content: center;
+
+            @media (min-width: 1200px) {
+                flex: 1 0 0%;
+            }
+        }
+
+        .result {
+            min-width: 300px;
+            border-bottom: $card_border_width solid $color_card_border;
+            display: flex;
+            flex-direction: column;
+            @media (min-width: 1200px) {
+                border-bottom: none;
+            }
+        }
     }
 }
 
-.game-result {
-    min-width: 600px;
-    border-bottom: $card_border_width solid $color_card_border;
-    padding: 8px 4px;
+.game-result-row {
+    flex-wrap: wrap;
 
     .home-team,
     .away-team,
     .match-result {
-        flex-basis: 32%;
-
+        flex-basis: 100%;
+        @media (min-width: 1200px) {
+            flex-basis:32%;
+        }
+        min-width: 200px;
         span {
             display: inline-block;
             margin-left: 5px;
@@ -82,11 +116,14 @@
 
         line-height: 2rem;
         vertical-align: middle;
-    }
+        align-items: center;
+        justify-content: space-around;
 
-    .away-team {
-        padding-left: 5px;
+        padding: 5px 0;
+        border-bottom: $card_border_width solid $color_card_border
     }
+    
+
 
     img,
     .img {
