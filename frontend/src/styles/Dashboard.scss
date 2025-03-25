@@ -30,16 +30,12 @@
 }
 
 .dashboard {
-    padding: 1rem;
+    padding: 1.5rem;
     background-color: #fff;
     margin-right: auto;
     margin-left: auto;
     max-width: 1284px;
     position: relative;
-
-    @media (max-width: 768px) {
-        padding: 0.5rem;
-    }
 }
 
 .parameter-section {
