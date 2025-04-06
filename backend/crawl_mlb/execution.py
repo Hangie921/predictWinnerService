@@ -1,5 +1,7 @@
 from .crawl import GetContent, Filter
 from .database import add_table_game_row, add_table_pitcher_row, add_table_team_row,add_table_team_stat_row,add_table_pitcher_stat_row
+import datetime
+
 
 import sys
 from datetime import date, timedelta
@@ -15,7 +17,7 @@ def date_range(start_date, end_date):
 def insert_db(match_list, match_date):
     ''''''
     for m in match_list:
-        if m.status.detailed_state == "Postponed":
+        if hasattr(m.status, "detailed_state") and m.status.detailed_state == "Postponed":
             continue
         add_table_game_row(m)
         add_table_pitcher_stat_row(m.home_team.starter, match_date)
@@ -32,7 +34,13 @@ def fetch_data_to_db(date:str):
     '''The date format should be 2024-08-01'''
     print('data is',date)
     matches = GetContent("object", f.item, date)
-    insert_db(matches, date)
+    print('matches is',matches)
+    for m in matches:
+        print("mmm", m.status)
+    now = datetime.datetime.now()
+    target_date = datetime.datetime.strptime(date, "%Y-%m-%d")
+    if (now.date() == target_date.date() and now.hour >= 4) == False:
+        insert_db(matches, date)
 
 # if __name__ == "__main__":
 #     if len(sys.argv) == 2:

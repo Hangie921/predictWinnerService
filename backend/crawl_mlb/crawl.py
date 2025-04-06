@@ -65,21 +65,26 @@ def QueryDataFromRequest(url):
 #     time.sleep(3)
 #     return driver.page_source
 
-# 包裝函式
+# 包裝函式, 此函式應該要為傳 ET 日期的當天(預測隔天）或是之前(回測）的日期
+# AWS 的 server 開在 亞洲，所以應該要考慮亞洲時間跟美洲時間的轉換
 def GetContent(format, filter_items, date_string):
     now = datetime.datetime.now()
+    print(now.astimezone().tzinfo)
+    print(now.hour)
+    
+
     target_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
     is_current = False
 
-    if now.date() == target_date.date():
+    if now.date() == target_date.date() and now.hour >= 4:
         is_current = True
     if is_current is False:
         now = datetime.datetime.strptime(date_string, "%Y-%m-%d")
 
     if "diff" not in filter_items:
         return "filter required"
-    print("is_current ", is_current)
-    print("now is ", now)    
+    print("is_current (ET) ", is_current)
+    print("(ET) now is  ", now)    
 
     current_year = now.strftime("%Y")
     current_time = now.strftime("%Y-%m-%d")

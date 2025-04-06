@@ -1,12 +1,10 @@
-from django.shortcuts import render
-from rest_framework import generics
-from django.contrib.auth.models import User
-from .models import Weight, Game, Team, TeamStat, Pitcher, PitcherStat
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import UserSerializer,WeightSerializer,GameSerializer
-from django.http import JsonResponse, HttpResponse
+from .models import Game, Team, TeamStat, Pitcher, PitcherStat
+from django.http import JsonResponse
 from . import const 
-from crawl_mlb import execution
+from crawl_mlb import execution, mlb_class
+
+import datetime
+
 
 def calculate_power(home_team, away_team, home_starter, away_starter, diff_weight, home_away_weight, handed_weight, overall_weight, l10_weight):
     home_power = 0
@@ -66,15 +64,29 @@ def compare_power(ele):
     return ele["_winningPointDiff"]
 
 def get_supported_date(request):
-    ret = [{
-        "year": 2024,
+    ret = [
+    # {
+    #     "year": 2024,
+    #     "type": "regularSeason",
+    #     "startDate": "2024-03-20",
+    #     "endDate": "2024-09-30",
+    # },
+    {
+        "year": 2025,
         "type": "regularSeason",
-        "startDate": "2024-03-20",
-        "endDate": "2024-09-30",
+        "startDate": "2025-03-29",
+        "endDate": "2025-09-30",
     }]
     return JsonResponse(ret, safe=False)
 
+def get_is_current_et_date(date:str):
+    now = datetime.datetime.now()
+    target_date = datetime.datetime.strptime(date, "%Y-%m-%d")
+    is_current = False
 
+    if now.date() == target_date.date() and now.hour >= 4:
+        is_current = True
+    return is_current
 
 def get_prediction(request):
     if request.META["REQUEST_METHOD"] != "GET":
@@ -88,15 +100,27 @@ def get_prediction(request):
     print("handed_weight is", request.GET.get('handed_weight'))
     print("overall_weight is", request.GET.get('overall_weight'))
     print("date is", request.GET.get('date'))
-    games = Game.objects.filter(game_date=request.GET.get('date'))
-    
-    if len(games) == 0:
-        execution.fetch_data_to_db(request.GET.get('date'))
+    games = []
+    detailed_games = []
+
+    is_current = get_is_current_et_date(request.GET.get('date'))
+    if is_current:
+        f = mlb_class.Filter()
+        games = execution.GetContent('object', f.item, request.GET.get('date'))
+        print("games is", games)
+        
+        for game in games:
+            print("game", game.id)
+        return JsonResponse(detailed_games, safe=False)
+    else:
         games = Game.objects.filter(game_date=request.GET.get('date'))
         if len(games) == 0:
-            return JsonResponse({"message": "No games data for this date yet"})
+            execution.fetch_data_to_db(request.GET.get('date'))
+            games = Game.objects.filter(game_date=request.GET.get('date'))
+            if len(games) == 0:
+                return JsonResponse({"message": "No games data for this date yet"})
 
-    detailed_games = []
+    
     for game in games:
         # Get team stats
         
