@@ -9,9 +9,24 @@ import api from '../api'
 import "../styles/Dashboard.scss"
 import "../styles/Button.scss"
 
-const defaultStartDateValue = "2024-08-01"
-const defaultEndDateValue = "2024-08-10"
+const defaultEndDateValue = "2025-09-30"
 const dateFormat = "YYYY-MM-DD"
+
+let defaultStartDateValue = "2025-03-31"
+
+function getCurrentETDate() {
+    let utcNow = dayjs().utc()
+    console.log('utcNow', utcNow.hour())
+    if (utcNow.hour() > 3) {
+        defaultStartDateValue = utcNow.format(dateFormat)
+    } else {
+        utcNow = utcNow.date(utcNow.date()-1)
+        console.log('now', utcNow)
+        defaultStartDateValue = utcNow.format(dateFormat)
+    }
+}
+
+getCurrentETDate()
 
 const defaultDiffWeight = 1
 const defaultL10Weight = 1
@@ -58,7 +73,9 @@ function Dashboard({ page }) {
             try {
                 const res = await api.get(`prediction?date=${startDate.format(dateFormat)}&diff_weight=${diffWeight}&l10_weight=${l10Weight}&home_away_weight=${homeAwayWeight}&handed_weight=${handedWeight}&overall_weight=${overallWeight}`)
                 console.table(res.data)
-                setCards(res.data)
+                if (Array.isArray(res.data)) {
+                    setCards(res.data)
+                } 
             } catch (error) {
                 alert(error)
             } finally {
