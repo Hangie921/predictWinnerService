@@ -1,5 +1,6 @@
 import time
-import datetime
+from datetime import datetime, timedelta
+import pytz
 import json
 from types import SimpleNamespace
 
@@ -43,9 +44,10 @@ bullpen_stats_url = (
     "https://www.covers.com/sport/baseball/mlb/statistics/team-bullpenera/2022"
 )
 
+# If the date of the standing API is newer than current time
+# the API will response the current standings.
 standings_api_url = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&standingsTypes=regularSeason&season="
-# standings_api_url example: https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season=2024&standingsTypes=regularSeason&date=2024-08-30
-# standings_api_url_with_date = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season=2022&standingsTypes=regularSeason&date=2022-10-03"
+
 history_standings_api_url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1&leagueId=103,104&hydrate=team,linescore,flags,liveLookin,review&useLatestGames=false&language=en&date="
 history_standings_api_url_with_date = "https://statsapi.mlb.com/api/v1/schedule?sportId=1&leagueId=103,104&hydrate=team,linescore,flags,liveLookin,review&useLatestGames=false&language=en&date=2024-08-30"
 
@@ -67,33 +69,34 @@ def QueryDataFromRequest(url):
 
 # 包裝函式, 此函式應該要為傳 ET 日期的當天(預測隔天）或是之前(回測）的日期
 # AWS 的 server 開在 亞洲，所以應該要考慮亞洲時間跟美洲時間的轉換
-def GetContent(format, filter_items, date_string):
-    now = datetime.datetime.now()
-    print(now.astimezone().tzinfo)
-    print(now.hour)
-    
+et_timezone = pytz.timezone("US/Eastern")
+def GetContent(format, filter_items, et_date_string):
+    utc_now = datetime.now(pytz.UTC)
+    print("utc_now.tzinfo   =", utc_now.astimezone().tzinfo)
+    print("utc_now.hour =",utc_now.hour)
 
-    target_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
-    is_current = False
+    et_now = utc_now.astimezone(et_timezone)
+    target_date = datetime.strptime(et_date_string, "%Y-%m-%d")
+    is_predicting_next_game = False
 
-    if now.date() == target_date.date() and now.hour >= 4:
-        is_current = True
-    if is_current is False:
-        now = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+    if et_now.date() == target_date.date():
+        is_predicting_next_game = True
+    if is_predicting_next_game is False:
+        now = datetime.strptime(et_date_string, "%Y-%m-%d")
 
     if "diff" not in filter_items:
         return "filter required"
-    print("is_current (ET) ", is_current)
-    print("(ET) now is  ", now)    
+    print("is_predicting_next_game (ET) ", is_predicting_next_game)
+    print("(ET) now is  ", et_now)    
 
-    current_year = now.strftime("%Y")
-    current_time = now.strftime("%Y-%m-%d")
-    next_day = now + datetime.timedelta(days=1)
+    current_year = et_now.strftime("%Y")
+    current_date = et_now.strftime("%Y-%m-%d")
+    next_day = et_now + timedelta(days=1)
     next_day_str = next_day.strftime("%Y-%m-%d")
-    r = QueryDataFromRequest(propable_pitchers_url + current_time)
+    r = QueryDataFromRequest(propable_pitchers_url + current_date)
     # bull_pen_root = rq.get(bullpen_stats_url, verify=False).text
     # print(bull_pen_root)
-    data = QueryDataFromRequest(getStandingAPIURL(current_year, current_time))
+    data = QueryDataFromRequest(getStandingAPIURL(current_year, current_date))
     standings = json.loads(data, object_hook=lambda d: SimpleNamespace(**d))
     match_root = bs4.BeautifulSoup(r, "html.parser")
     match_container = match_root.find(class_="probable-pitchers__container")
@@ -102,8 +105,8 @@ def GetContent(format, filter_items, date_string):
     final_matches = []
     history = {}
     history_standings = {}
-    if is_current is False:
-        history = QueryDataFromRequest(history_standings_api_url + current_time)
+    if is_predicting_next_game is False:
+        history = QueryDataFromRequest(history_standings_api_url + current_date)
         tmp = json.loads(history, object_hook=lambda d: SimpleNamespace(**d))
         if len(tmp.dates) > 0 :
             history_standings = tmp.dates[0]
@@ -120,7 +123,7 @@ def GetContent(format, filter_items, date_string):
         game_id = match.attrs["data-gamepk"]
         f = Filter()
         f.item = filter_items
-        m = Match(game_id, home_team, away_team, f, date_string)
+        m = Match(game_id, home_team, away_team, f, et_date_string)
         starters = match.find_all(class_="probable-pitchers__pitcher-summary")
         starter_index = 0
         for starter in starters:
@@ -245,7 +248,7 @@ def GetContent(format, filter_items, date_string):
                         and tr.team.name == "Arizona Diamondbacks"
                     ):
                         m.home_team = target_team
-            if is_current is False:
+            if is_predicting_next_game is False:
                 for game in history_standings.games:
                     if m.id == str(game.gamePk):
                         status = Game_status(game.status.detailedState)
@@ -268,14 +271,14 @@ def GetContent(format, filter_items, date_string):
         if hasattr(m.status, "detailed_state") is False or m.status.detailed_state != "Postponed":
             m.compare_all_item()
             final_matches.append(m)
+        print("match is ", m)
     final_matches.sort(key=sortMatch, reverse=True)
     count = 1
     ret_string = []
 
     print("This season is", current_year)
-    print("GMT+8 Today    =", current_time)
+    print("ET Today    =", et_date_string)
     print("GMT+8 Next day =", next_day_str)
-    print("calling American time is =", current_time)
 
     if format == "object":
         return final_matches

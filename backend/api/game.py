@@ -79,9 +79,9 @@ def get_supported_date(request):
     }]
     return JsonResponse(ret, safe=False)
 
-def get_is_current_et_date(date:str):
+def get_is_current_et_date(et_date:str):
     now = datetime.datetime.now()
-    target_date = datetime.datetime.strptime(date, "%Y-%m-%d")
+    target_date = datetime.datetime.strptime(et_date, "%Y-%m-%d")
     is_current = False
 
     if now.date() == target_date.date() and now.hour >= 4:
@@ -103,14 +103,84 @@ def get_prediction(request):
     games = []
     detailed_games = []
 
-    is_current = get_is_current_et_date(request.GET.get('date'))
-    if is_current:
+    is_predicting_next_game = get_is_current_et_date(request.GET.get('date'))
+    if is_predicting_next_game:
         f = mlb_class.Filter()
         games = execution.GetContent('object', f.item, request.GET.get('date'))
-        print("games is", games)
-        
+
         for game in games:
-            print("game", game.id)
+            winning_point_diff = 0
+            if game.away_team.win_points > game.home_team.win_points:
+                winning_point_diff = game.away_team.win_points - game.home_team.win_points
+            elif game.home_team.win_points > game.away_team.win_points:
+                winning_point_diff = game.home_team.win_points - game.away_team.win_points
+
+            game_detail = {
+                "_isHomeTeamWin": False,
+                "_winningPointDiff": winning_point_diff,
+                const.GAME_GAME_ID_JSON_KEY: game.id,
+                const.GAME_GAME_DATE_JSON_KEY: request.GET.get('date'),
+                const.GAME_HOME_TEAM_JSON_KEY: {
+                    const.GAME_TEAM_ID: game.home_team.id,
+                    const.GAME_NAME_JSON_KEY: game.home_team.name,
+                    const.GAME_OVERALL_WINS_JSON_KEY: game.home_team.overall_winning.win if game.home_team is not None else 0,
+                    const.GAME_OVERALL_LOSS_JSON_KEY: game.home_team.overall_winning.loss if game.home_team is not None else 0,
+                    const.GAME_HOME_WINS_JSON_KEY: game.home_team.home_winning.win if game.home_team is not None else 0,
+                    const.GAME_HOME_LOSS_JSON_KEY: game.home_team.home_winning.loss if game.home_team is not None else 0,
+                    const.GAME_AWAY_WINS_JSON_KEY: game.home_team.away_winning.win if game.home_team is not None else 0,
+                    const.GAME_AWAY_LOSS_JSON_KEY: game.home_team.away_winning.loss if game.home_team is not None else 0,
+                    const.GAME_LEFT_HANDED_WINS_JSON_KEY: game.home_team.vs_l_winning.win if game.home_team is not None else 0,
+                    const.GAME_LEFT_HANDED_LOSS_JSON_KEY: game.home_team.vs_l_winning.loss if game.home_team is not None else 0,
+                    const.GAME_RIGHT_HANDED_WINS_JSON_KEY: game.home_team.vs_r_winning.win if game.home_team is not None else 0,
+                    const.GAME_RIGHT_HANDED_LOSS_JSON_KEY: game.home_team.vs_r_winning.loss if game.home_team is not None else 0,
+                    const.GAME_LAST_10_WINS_JSON_KEY: game.home_team.l10.win if game.home_team is not None else 0,
+                    const.GAME_LAST_10_LOSS_JSON_KEY: game.home_team.l10.loss if game.home_team is not None else 0,
+                    const.GAME_DIFF_JSON_KEY: game.home_team.diff if game.home_team is not None else 0,
+                    const.GAME_STREAK_IS_WIN_JSON_KEY: game.home_team.streak.is_win if game.home_team is not None else False,
+                    const.GAME_STREAK_JSON_KEY: game.home_team.streak.streak_num if game.home_team is not None else 0,
+                    const.GAME_PITCHER_JSON_KEY: {
+                        const.GAME_NAME_JSON_KEY: game.home_team.starter.name,
+                        const.GAME_PITCHER_HANDED_JSON_KEY: game.home_team.starter.handed,
+                        const.GAME_PITCHER_ERA_JSON_KEY: game.home_team.starter.era if game.home_team.starter else 0,
+                        const.GAME_PITCHER_WINS_JSON_KEY: game.home_team.starter.winning.win if game.home_team.starter else 0,
+                        const.GAME_PITCHER_LOSS_JSON_KEY: game.home_team.starter.winning.loss if game.home_team.starter else 0,
+                        const.GAME_PITCHER_SO_JSON_KEY: game.home_team.starter.so if game.home_team.starter else 0
+                    },
+                    const.GAME_POWER: game.home_team.win_points
+                },
+                const.GAME_AWAY_TEAM_JSON_KEY: {
+                    const.GAME_TEAM_ID: game.away_team.id,
+                    const.GAME_NAME_JSON_KEY: game.away_team.name,
+                    const.GAME_OVERALL_WINS_JSON_KEY: game.away_team.overall_winning.win if game.away_team is not None else 0,
+                    const.GAME_OVERALL_LOSS_JSON_KEY: game.away_team.overall_winning.loss if game.away_team is not None else 0,
+                    const.GAME_HOME_WINS_JSON_KEY: game.away_team.home_winning.win if game.away_team is not None else 0,
+                    const.GAME_HOME_LOSS_JSON_KEY: game.away_team.home_winning.loss if game.away_team is not None else 0,
+                    const.GAME_AWAY_WINS_JSON_KEY: game.away_team.away_winning.win if game.away_team is not None else 0,
+                    const.GAME_AWAY_LOSS_JSON_KEY: game.away_team.away_winning.loss if game.away_team is not None else 0,
+                    const.GAME_LEFT_HANDED_WINS_JSON_KEY: game.away_team.vs_l_winning.win if game.away_team is not None else 0,
+                    const.GAME_LEFT_HANDED_LOSS_JSON_KEY: game.away_team.vs_l_winning.loss if game.away_team is not None else 0,
+                    const.GAME_RIGHT_HANDED_WINS_JSON_KEY: game.away_team.vs_r_winning.win if game.away_team is not None else 0,
+                    const.GAME_RIGHT_HANDED_LOSS_JSON_KEY: game.away_team.vs_r_winning.loss if game.away_team is not None else 0,
+                    const.GAME_LAST_10_WINS_JSON_KEY: game.away_team.l10.win if game.away_team is not None else 0,
+                    const.GAME_LAST_10_LOSS_JSON_KEY: game.away_team.l10.loss if game.away_team is not None else 0,
+                    const.GAME_DIFF_JSON_KEY: game.away_team.diff if game.away_team is not None else 0,
+                    const.GAME_STREAK_IS_WIN_JSON_KEY: game.away_team.streak.is_win if game.away_team is not None else False,
+                    const.GAME_STREAK_JSON_KEY: game.away_team.streak.streak_num if game.away_team is not None else 0,
+                    const.GAME_PITCHER_JSON_KEY: {
+                        const.GAME_NAME_JSON_KEY: game.away_team.starter.name,
+                        const.GAME_PITCHER_HANDED_JSON_KEY: game.away_team.starter.handed,
+                        const.GAME_PITCHER_ERA_JSON_KEY: game.away_team.starter.era if game.away_team.starter else 0,
+                        const.GAME_PITCHER_WINS_JSON_KEY: game.away_team.starter.winning.win if game.away_team.starter else 0,
+                        const.GAME_PITCHER_LOSS_JSON_KEY: game.away_team.starter.winning.loss if game.away_team.starter else 0,
+                        const.GAME_PITCHER_SO_JSON_KEY: game.away_team.starter.so if game.away_team.starter else 0
+                    },
+                    const.GAME_POWER: game.away_team.win_points
+                }
+            }
+            detailed_games.append(game_detail)
+        detailed_games.sort(key=compare_power, reverse=True)
+        
+        
         return JsonResponse(detailed_games, safe=False)
     else:
         games = Game.objects.filter(game_date=request.GET.get('date'))

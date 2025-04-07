@@ -30,17 +30,14 @@ def insert_db(match_list, match_date):
         add_table_team_row(m.home_team.id, m.home_team.name)
         add_table_team_row(m.away_team.id, m.away_team.name)
 
-def fetch_data_to_db(date:str):
+def fetch_data_to_db(et_date:str):
     '''The date format should be 2024-08-01'''
-    print('data is',date)
-    matches = GetContent("object", f.item, date)
+    print('data is',et_date)
+    matches = GetContent("object", f.item, et_date)
     print('matches is',matches)
     for m in matches:
         print("mmm", m.status)
-    now = datetime.datetime.now()
-    target_date = datetime.datetime.strptime(date, "%Y-%m-%d")
-    if (now.date() == target_date.date() and now.hour >= 4) == False:
-        insert_db(matches, date)
+    insert_db(matches, et_date)
 
 # if __name__ == "__main__":
 #     if len(sys.argv) == 2:
