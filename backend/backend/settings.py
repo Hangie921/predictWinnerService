@@ -138,3 +138,14 @@ if DEBUG:
     ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = ["http://"+os.getenv("ALLOWED_HOST")]
+
+if not DEBUG:
+    LOGGING = {
+        'handlers': {
+            'file': {
+                'level': 'ERROR',
+                'class': 'logging.FileHandler',
+                'filename': '/home/walter/predictWinnerService/runTimeLogs/django.log',
+            },
+        },
+    }
