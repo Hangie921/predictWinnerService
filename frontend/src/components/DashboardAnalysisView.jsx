@@ -10,7 +10,7 @@ function getCheck() {
         <div className="match-result flex flex-justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" fill="#e6f7e9" />
-                <path d="M9 12.5l2 2 4-4.5" stroke="#2ecc71" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M9 12.5l2 2 4-4.5" stroke="#2ecc71" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
         </div>
     )
@@ -21,15 +21,15 @@ function getCross() {
         <div className="match-result flex flex-justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" fill="#fdedee" />
-                <path d="M8 8l8 8M16 8l-8 8" stroke="#e74c3c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M8 8l8 8M16 8l-8 8" stroke="#e74c3c" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
         </div>
     )
 }
 
-function renderPredictionResult(isPredictionCorrect, r) {
+function renderPredictionResult(isPredictionCorrect, r, index) {
     return (
-        <div className="game-result-row flex">
+        <div className="game-result-row flex" key={index}>
             <div className="home-team flex">
                 <div className="img">
                     <img src={getTeamLogoURL(r.homeTeamID)} alt="" />
@@ -91,7 +91,7 @@ function DashboardAnalysisView({ data }) {
                             {rInstance.result.map((r, rIdx) => {
                                 const isPredictionCorrect = r._isHomeTeamWin && r.homeTeamPower > r.awayTeamPower ||
                                     !r._isHomeTeamWin && r.awayTeamPower > r.homeTeamPower
-                                return renderPredictionResult(isPredictionCorrect, r)
+                                return renderPredictionResult(isPredictionCorrect, r, rIdx)
                             })}
                         </div>
                     </div>

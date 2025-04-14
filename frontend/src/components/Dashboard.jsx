@@ -9,21 +9,25 @@ import api from '../api'
 import "../styles/Dashboard.scss"
 import "../styles/Button.scss"
 
-const defaultEndDateValue = "2025-09-30"
 const dateFormat = "YYYY-MM-DD"
 
 let defaultStartDateValue = "2025-03-31"
+let defaultEndDateValue = "2025-09-30"
 
 function getCurrentETDate() {
     let utcNow = dayjs().utc()
     console.log('utcNow', utcNow.hour())
     if (utcNow.hour() > 3) {
         defaultStartDateValue = utcNow.format(dateFormat)
+        defaultEndDateValue = utcNow.subtract(7, 'day').format(dateFormat)
     } else {
-        utcNow = utcNow.date(utcNow.date()-1)
+        utcNow = utcNow.date(utcNow.date() - 1)
         console.log('now', utcNow)
         defaultStartDateValue = utcNow.format(dateFormat)
+        defaultEndDateValue = utcNow.subtract(10, 'day').format(dateFormat)
     }
+    console.log('final: defaultStartDateValue', defaultStartDateValue)
+    console.log('final: defaultEndDateValue', defaultEndDateValue)
 }
 
 getCurrentETDate()
@@ -75,7 +79,7 @@ function Dashboard({ page }) {
                 console.table(res.data)
                 if (Array.isArray(res.data)) {
                     setCards(res.data)
-                } 
+                }
             } catch (error) {
                 alert(error)
             } finally {
