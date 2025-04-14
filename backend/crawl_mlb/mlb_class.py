@@ -204,97 +204,92 @@ class Match:
     def compare_all_item(self):
         '''Should deprecated by the new weight mechanism '''
         # diff
-        if self.filter.item["diff"]:
-            print("what", self.home_team.diff, self.away_team.diff)
-            if self.home_team.diff > self.away_team.diff:
-                self.home_team.win_points += DIFF_WIN_POINT_WEIGHTS
-            elif self.away_team.diff > self.home_team.diff:
-                self.away_team.win_points += DIFF_WIN_POINT_WEIGHTS
+        print("what", self.home_team.diff, self.away_team.diff)
+        if self.home_team.diff > self.away_team.diff:
+            self.home_team.win_points += DIFF_WIN_POINT_WEIGHTS
+        elif self.away_team.diff > self.home_team.diff:
+            self.away_team.win_points += DIFF_WIN_POINT_WEIGHTS
         # l10
-        if self.filter.item["l10"]:
-            if self.home_team.l10.pct > self.away_team.l10.pct:
-                self.home_team.win_points += L10_WIN_POINT_WEIGHTS
-            elif self.away_team.l10.pct > self.home_team.l10.pct:
-                self.away_team.win_points += L10_WIN_POINT_WEIGHTS
+        if self.home_team.l10.pct > self.away_team.l10.pct:
+            self.home_team.win_points += L10_WIN_POINT_WEIGHTS
+        elif self.away_team.l10.pct > self.home_team.l10.pct:
+            self.away_team.win_points += L10_WIN_POINT_WEIGHTS
         # home/away winning
-        if self.filter.item["home_or_away"]:
-            if self.home_team.home_winning.pct > self.away_team.away_winning.pct:
-                self.home_team.win_points += float(
-                    self.home_team.home_winning.pct
-                ) - float(self.away_team.away_winning.pct)
-            if self.away_team.away_winning.pct > self.home_team.home_winning.pct:
-                self.away_team.win_points += float(
-                    self.away_team.away_winning.pct
-                ) - float(self.home_team.home_winning.pct)
+        if self.home_team.home_winning.pct > self.away_team.away_winning.pct:
+            self.home_team.win_points += float(
+                self.home_team.home_winning.pct
+            ) - float(self.away_team.away_winning.pct)
+        if self.away_team.away_winning.pct > self.home_team.home_winning.pct:
+            self.away_team.win_points += float(
+                self.away_team.away_winning.pct
+            ) - float(self.home_team.home_winning.pct)
 
         # pitcher handed winning
-        if self.filter.item["handed"]:
-            if (
-                self.home_team.starter.handed == "RHP"
-                and self.away_team.starter.handed == "RHP"
-            ):
-                self.home_team.handed_winning = self.home_team.vs_r_winning
-                self.away_team.handed_winning = self.away_team.vs_r_winning
-                if self.home_team.vs_r_winning.pct > self.away_team.vs_r_winning.pct:
-                    self.home_team.win_points += float(
-                        self.home_team.vs_r_winning.pct
-                    ) - float(self.away_team.vs_r_winning.pct)
-                elif self.away_team.vs_r_winning.pct > self.home_team.vs_r_winning.pct:
-                    self.away_team.win_points += float(
-                        self.away_team.vs_r_winning.pct
-                    ) - float(self.home_team.vs_r_winning.pct)
-            elif (
-                self.home_team.starter.handed == "LHP"
-                and self.away_team.starter.handed == "LHP"
-            ):
-                self.home_team.handed_winning = self.home_team.vs_l_winning
-                self.away_team.handed_winning = self.away_team.vs_l_winning
-                if self.home_team.vs_l_winning.pct > self.away_team.vs_l_winning.pct:
-                    self.home_team.win_points += float(
-                        self.home_team.vs_l_winning.pct
-                    ) - float(self.away_team.vs_l_winning.pct)
-                elif self.away_team.vs_l_winning.pct > self.home_team.vs_l_winning.pct:
-                    self.away_team.win_points += float(
-                        self.away_team.vs_l_winning.pct
-                    ) - float(self.home_team.vs_l_winning.pct)
-            elif (
-                self.home_team.starter.handed == "RHP"
-                and self.away_team.starter.handed == "LHP"
-            ):
-                self.home_team.handed_winning = self.home_team.vs_l_winning
-                self.away_team.handed_winning = self.away_team.vs_r_winning
-                if self.home_team.vs_l_winning.pct > self.away_team.vs_r_winning.pct:
-                    self.home_team.win_points += float(
-                        self.home_team.vs_l_winning.pct
-                    ) - float(self.away_team.vs_r_winning.pct)
-                elif self.away_team.vs_r_winning.pct > self.home_team.vs_l_winning.pct:
-                    self.away_team.win_points += float(
-                        self.away_team.vs_r_winning.pct
-                    ) - float(self.home_team.vs_l_winning.pct)
-            elif (
-                self.home_team.starter.handed == "LHP"
-                and self.away_team.starter.handed == "RHP"
-            ):
-                self.home_team.handed_winning = self.home_team.vs_r_winning
-                self.away_team.handed_winning = self.away_team.vs_l_winning
-                if self.home_team.vs_r_winning.pct > self.away_team.vs_l_winning.pct:
-                    self.home_team.win_points += float(
-                        self.home_team.vs_r_winning.pct
-                    ) - float(self.away_team.vs_l_winning.pct)
-                elif self.away_team.vs_l_winning.pct > self.home_team.vs_r_winning.pct:
-                    self.away_team.win_points += float(
-                        self.away_team.vs_l_winning.pct
-                    ) - float(self.home_team.vs_r_winning.pct)
-        # overall winning
-        if self.filter.item["overall"]:
-            if self.home_team.overall_winning.pct > self.away_team.overall_winning.pct:
+        if (
+            self.home_team.starter.handed == "RHP"
+            and self.away_team.starter.handed == "RHP"
+        ):
+            self.home_team.handed_winning = self.home_team.vs_r_winning
+            self.away_team.handed_winning = self.away_team.vs_r_winning
+            if self.home_team.vs_r_winning.pct > self.away_team.vs_r_winning.pct:
                 self.home_team.win_points += float(
-                    self.home_team.overall_winning.pct
-                ) - float(self.away_team.overall_winning.pct)
-            if self.away_team.overall_winning.pct > self.home_team.overall_winning.pct:
+                    self.home_team.vs_r_winning.pct
+                ) - float(self.away_team.vs_r_winning.pct)
+            elif self.away_team.vs_r_winning.pct > self.home_team.vs_r_winning.pct:
                 self.away_team.win_points += float(
-                    self.away_team.overall_winning.pct
-                ) - float(self.home_team.overall_winning.pct)
+                    self.away_team.vs_r_winning.pct
+                ) - float(self.home_team.vs_r_winning.pct)
+        elif (
+            self.home_team.starter.handed == "LHP"
+            and self.away_team.starter.handed == "LHP"
+        ):
+            self.home_team.handed_winning = self.home_team.vs_l_winning
+            self.away_team.handed_winning = self.away_team.vs_l_winning
+            if self.home_team.vs_l_winning.pct > self.away_team.vs_l_winning.pct:
+                self.home_team.win_points += float(
+                    self.home_team.vs_l_winning.pct
+                ) - float(self.away_team.vs_l_winning.pct)
+            elif self.away_team.vs_l_winning.pct > self.home_team.vs_l_winning.pct:
+                self.away_team.win_points += float(
+                    self.away_team.vs_l_winning.pct
+                ) - float(self.home_team.vs_l_winning.pct)
+        elif (
+            self.home_team.starter.handed == "RHP"
+            and self.away_team.starter.handed == "LHP"
+        ):
+            self.home_team.handed_winning = self.home_team.vs_l_winning
+            self.away_team.handed_winning = self.away_team.vs_r_winning
+            if self.home_team.vs_l_winning.pct > self.away_team.vs_r_winning.pct:
+                self.home_team.win_points += float(
+                    self.home_team.vs_l_winning.pct
+                ) - float(self.away_team.vs_r_winning.pct)
+            elif self.away_team.vs_r_winning.pct > self.home_team.vs_l_winning.pct:
+                self.away_team.win_points += float(
+                    self.away_team.vs_r_winning.pct
+                ) - float(self.home_team.vs_l_winning.pct)
+        elif (
+            self.home_team.starter.handed == "LHP"
+            and self.away_team.starter.handed == "RHP"
+        ):
+            self.home_team.handed_winning = self.home_team.vs_r_winning
+            self.away_team.handed_winning = self.away_team.vs_l_winning
+            if self.home_team.vs_r_winning.pct > self.away_team.vs_l_winning.pct:
+                self.home_team.win_points += float(
+                    self.home_team.vs_r_winning.pct
+                ) - float(self.away_team.vs_l_winning.pct)
+            elif self.away_team.vs_l_winning.pct > self.home_team.vs_r_winning.pct:
+                self.away_team.win_points += float(
+                    self.away_team.vs_l_winning.pct
+                ) - float(self.home_team.vs_r_winning.pct)
+        # overall winning
+        if self.home_team.overall_winning.pct > self.away_team.overall_winning.pct:
+            self.home_team.win_points += float(
+                self.home_team.overall_winning.pct
+            ) - float(self.away_team.overall_winning.pct)
+        if self.away_team.overall_winning.pct > self.home_team.overall_winning.pct:
+            self.away_team.win_points += float(
+                self.away_team.overall_winning.pct
+            ) - float(self.home_team.overall_winning.pct)
         if self.home_team.win_points > self.away_team.win_points:
             self.winning_point_diff = (
                 self.home_team.win_points - self.away_team.win_points

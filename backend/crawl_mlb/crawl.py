@@ -276,7 +276,7 @@ def GetContent(format, filter_items, et_date_string):
                             m.loser_team_id = game.teams.away.team.id
             starter_index += 1
         if hasattr(m.status, "detailed_state") is False or m.status.detailed_state != "Postponed":
-            # m.compare_all_item()
+            m.compare_all_item()
             final_matches.append(m)
         print("match s ", m)
     final_matches.sort(key=sortMatch, reverse=True)

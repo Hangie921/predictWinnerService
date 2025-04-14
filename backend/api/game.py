@@ -10,6 +10,8 @@ def calculate_power(home_team, away_team, home_starter, away_starter, diff_weigh
     home_power = 0
     away_power = 0
     # diff
+    print("home_team.diff", home_team.diff)
+    print("away_team.diff", away_team.diff)
     if home_team.diff > away_team.diff:
         home_power += float(diff_weight)
     elif home_team.diff < away_team.diff:
