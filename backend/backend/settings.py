@@ -1,4 +1,6 @@
 import os
+import logging
+import logging.config
 
 from dotenv import load_dotenv
 from datetime import timedelta
@@ -141,11 +143,27 @@ CSRF_TRUSTED_ORIGINS = ["http://"+os.getenv("ALLOWED_HOST")]
 
 if not DEBUG:
     LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '{levelname} {asctime} {module} {message}',
+                'style': '{',
+            },
+        },
         'handlers': {
             'file': {
                 'level': 'ERROR',
                 'class': 'logging.FileHandler',
-                'filename': '/home/walter/predictWinnerService/runTimeLogs/django.log',
+                'filename': '/home/walter/predictWinnerService/runTimeLogs/django-error.log',
+                'formatter': 'verbose',
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': 'ERROR',
+                'propagate': True,
             },
         },
     }
