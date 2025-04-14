@@ -306,7 +306,7 @@ class Match:
     def append(self, pool, target):
         pool.append(target)
 
-    def print_stats(self, is_current: bool):
+    def print_stats(self, is_predictin_next: bool):
         ret_string = []
         tmp = "+++++++++++++++++++++++++++++++++++++++++++++++++"
         self.append(ret_string, tmp)
@@ -400,7 +400,7 @@ class Match:
                 + str(self.away_team.diff)
             )
             self.append(ret_string, tmp)
-        if is_current is False:
+        if is_predictin_next is False:
             tmp = "Winner\t\t "
             if self.is_winner_home_team:
                 tmp += "True\t\t False"

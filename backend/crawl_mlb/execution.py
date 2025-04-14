@@ -18,9 +18,7 @@ def insert_db(match_list, match_date):
     ''''''
     for m in match_list:
         if hasattr(m.status, "detailed_state") and m.status.detailed_state == "Postponed":
-            print("[insert_db] ", m.status.detailed_state)
             continue
-        print("[insert_db] match_date", match_date)
         add_table_game_row(m)
         add_table_pitcher_stat_row(m.home_team.starter, match_date)
         add_table_pitcher_stat_row(m.away_team.starter, match_date)
@@ -34,12 +32,7 @@ def insert_db(match_list, match_date):
 
 def fetch_data_to_db(et_date:str):
     '''The date format should be 2024-08-01'''
-    print('[fetch_data_to_db] date is',et_date)
     matches = GetContent("object", f.item, et_date)
-    print('[fetch_data_to_db] matches is',matches)
-    for m in matches:
-        print("mmm", m.id)
-        print("mmm", m.status)
     insert_db(matches, et_date)
 
 # if __name__ == "__main__":

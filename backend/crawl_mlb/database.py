@@ -39,7 +39,6 @@ def add_table_game_row(match:Match):
     query = "select game_pk from "+Table_name_game+f" where game_pk={match.id}"
     cursor.execute(query)
     result = cursor.fetchone()
-    print("[add_table_game_row] result is", result)
     if result is None:
         cursor.execute("insert into "+Table_name_game+" (game_pk, game_date, winner_t_id, home_team_power, away_team_power, is_winner_home_team, home_starter_id, away_starter_id, home_team_id, away_team_id) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                     (match.id, match.date, match.winner_team_id, match.home_team.win_points ,match.away_team.win_points,match.is_winner_home_team,match.home_team.starter.id,match.away_team.starter.id, match.home_team.id, match.away_team.id))

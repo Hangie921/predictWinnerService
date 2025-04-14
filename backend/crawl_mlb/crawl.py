@@ -257,8 +257,6 @@ def GetContent(format, filter_items, et_date_string):
             if is_predicting_next_game is False:
                 print("predicting next game is [FALSE]")
                 for game in history_standings.games:
-                    print("history game is", game)
-                    print("history game is", game.status)
                     if m.id == str(game.gamePk):
                         status = Game_status(game.status.detailedState)
                         m.status = status
@@ -280,7 +278,7 @@ def GetContent(format, filter_items, et_date_string):
         if hasattr(m.status, "detailed_state") is False or m.status.detailed_state != "Postponed":
             m.compare_all_item()
             final_matches.append(m)
-        print("match is ", m)
+        print("match s ", m)
     final_matches.sort(key=sortMatch, reverse=True)
     count = 1
     ret_string = []
@@ -299,7 +297,7 @@ def GetContent(format, filter_items, et_date_string):
         for m in final_matches:
             a = "No.{}".format(count)
             ret_string.append(a)
-            ret_string.append(m.print_stats(is_current))
+            ret_string.append(m.print_stats(is_predicting_next_game))
             ret_string.append("\n")
             count += 1
         return "\n".join(ret_string)
