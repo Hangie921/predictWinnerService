@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from . import const 
 from crawl_mlb import execution, mlb_class
 
-import datetime
+from datetime import datetime
 
 
 def calculate_power(home_team, away_team, home_starter, away_starter, diff_weight, home_away_weight, handed_weight, overall_weight, l10_weight):
@@ -63,7 +63,7 @@ def calculate_power(home_team, away_team, home_starter, away_starter, diff_weigh
 def compare_power(ele):
     return ele["_winningPointDiff"]
 
-def get_supported_date(request):
+def api_get_supported_date(request):
     ret = [
     # {
     #     "year": 2024,
@@ -79,16 +79,17 @@ def get_supported_date(request):
     }]
     return JsonResponse(ret, safe=False)
 
-def get_is_current_et_date(et_date:str):
-    now = datetime.datetime.now()
-    target_date = datetime.datetime.strptime(et_date, "%Y-%m-%d")
-    is_current = False
+def check_is_predicting_next(et_date:str):
+    now = datetime.now()
+    target_date = datetime.strptime(et_date, "%Y-%m-%d")
+    is_predict_next = False
 
     if now.date() == target_date.date() and now.hour >= 4:
-        is_current = True
-    return is_current
+        is_predict_next = True
+    print("[game] is_predicting_next_game= ", is_predict_next)
+    return is_predict_next
 
-def get_prediction(request):
+def api_get_prediction(request):
     if request.META["REQUEST_METHOD"] != "GET":
         return JsonResponse({"error": "Invalid request method"}, status=400)
     
@@ -103,7 +104,7 @@ def get_prediction(request):
     games = []
     detailed_games = []
 
-    is_predicting_next_game = get_is_current_et_date(request.GET.get('date'))
+    is_predicting_next_game = check_is_predicting_next(request.GET.get('date'))
     if is_predicting_next_game:
         f = mlb_class.Filter()
         games = execution.GetContent('object', f.item, request.GET.get('date'))
@@ -297,7 +298,7 @@ def calculate_accuracy(all_games):
 
 AMOUNT_OF_THE_FIRST_FEW_GAMES= 3
 
-def get_backtest(request):
+def api_get_backtest(request):
     if request.META["REQUEST_METHOD"] != "GET":
         return JsonResponse({"error": "Invalid request method"}, status=400)
     print("first few", request.GET.get('first_few'))
@@ -308,11 +309,7 @@ def get_backtest(request):
         amount_of_the_first_few = AMOUNT_OF_THE_FIRST_FEW_GAMES
 
     games = Game.objects.filter(game_date__gte=request.GET.get('start_date')).filter(game_date__lte=request.GET.get('end_date')).order_by('game_date')
-    print("raw games", games)
 
-    # {
-    #     ${date}: [] => games
-    # }
     all_games = {}
     
     for game in games:

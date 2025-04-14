@@ -1,5 +1,5 @@
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 import pytz
 import json
 from types import SimpleNamespace
@@ -67,36 +67,42 @@ def QueryDataFromRequest(url):
 #     time.sleep(3)
 #     return driver.page_source
 
+def check_is_predicting_next(et_date:str):
+    now = datetime.now()
+    target_date = datetime.strptime(et_date, "%Y-%m-%d")
+    is_predict_next = False
+
+    if now.date() == target_date.date() and now.hour >= 4:
+        is_predict_next = True
+    print("[crawl] is_predicting_next:", is_predict_next)
+    return is_predict_next
+
 # 包裝函式, 此函式應該要為傳 ET 日期的當天(預測隔天）或是之前(回測）的日期
 # AWS 的 server 開在 亞洲，所以應該要考慮亞洲時間跟美洲時間的轉換
 et_timezone = pytz.timezone("US/Eastern")
 def GetContent(format, filter_items, et_date_string):
+    is_predicting_next_game = check_is_predicting_next(et_date_string)
+    
+    target_content_date = datetime.strptime(et_date_string, "%Y-%m-%d")
+    target_content_year = target_content_date.strftime("%Y")
+
     utc_now = datetime.now(pytz.UTC)
     print("utc_now.tzinfo   =", utc_now.astimezone().tzinfo)
     print("utc_now.hour =",utc_now.hour)
 
     et_now = utc_now.astimezone(et_timezone)
-    target_date = datetime.strptime(et_date_string, "%Y-%m-%d")
-    is_predicting_next_game = False
-
-    if et_now.date() == target_date.date():
-        is_predicting_next_game = True
-    if is_predicting_next_game is False:
-        now = datetime.strptime(et_date_string, "%Y-%m-%d")
 
     if "diff" not in filter_items:
         return "filter required"
     print("is_predicting_next_game (ET) ", is_predicting_next_game)
     print("(ET) now is  ", et_now)    
 
-    current_year = et_now.strftime("%Y")
-    current_date = et_now.strftime("%Y-%m-%d")
-    next_day = et_now + timedelta(days=1)
-    next_day_str = next_day.strftime("%Y-%m-%d")
-    r = QueryDataFromRequest(propable_pitchers_url + current_date)
+    # current_year = et_now.strftime("%Y")
+    # current_date = et_now.strftime("%Y-%m-%d")
+    r = QueryDataFromRequest(propable_pitchers_url + target_content_date.strftime("%Y-%m-%d"))
     # bull_pen_root = rq.get(bullpen_stats_url, verify=False).text
     # print(bull_pen_root)
-    data = QueryDataFromRequest(getStandingAPIURL(current_year, current_date))
+    data = QueryDataFromRequest(getStandingAPIURL(target_content_year, target_content_date.strftime("%Y-%m-%d")))
     standings = json.loads(data, object_hook=lambda d: SimpleNamespace(**d))
     match_root = bs4.BeautifulSoup(r, "html.parser")
     match_container = match_root.find(class_="probable-pitchers__container")
@@ -106,7 +112,7 @@ def GetContent(format, filter_items, et_date_string):
     history = {}
     history_standings = {}
     if is_predicting_next_game is False:
-        history = QueryDataFromRequest(history_standings_api_url + current_date)
+        history = QueryDataFromRequest(history_standings_api_url + target_content_date.strftime("%Y-%m-%d"))
         tmp = json.loads(history, object_hook=lambda d: SimpleNamespace(**d))
         if len(tmp.dates) > 0 :
             history_standings = tmp.dates[0]
@@ -249,7 +255,10 @@ def GetContent(format, filter_items, et_date_string):
                     ):
                         m.home_team = target_team
             if is_predicting_next_game is False:
+                print("predicting next game is [FALSE]")
                 for game in history_standings.games:
+                    print("history game is", game)
+                    print("history game is", game.status)
                     if m.id == str(game.gamePk):
                         status = Game_status(game.status.detailedState)
                         m.status = status
@@ -276,9 +285,11 @@ def GetContent(format, filter_items, et_date_string):
     count = 1
     ret_string = []
 
-    print("This season is", current_year)
-    print("ET Today    =", et_date_string)
-    print("GMT+8 Next day =", next_day_str)
+    print("This season is", target_content_year)
+    print("is_predicting_next_game (ET) ", is_predicting_next_game)
+    print("(ET) now is  ", et_now)    
+    print("et_date_string    =", et_date_string)
+
 
     if format == "object":
         return final_matches

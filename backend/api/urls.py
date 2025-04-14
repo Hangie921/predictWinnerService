@@ -7,7 +7,7 @@ urlpatterns = [
     path("weight/", views.CreateWeightView.as_view(), name="weight"),
     # path("weight/delete/<int:pk>/", views.Delete.as_view(), name="delete-weight"),
     # path("history/", views.CreateHistoryView.as_view(), name="history"),
-    path("prediction", game.get_prediction, name="prediction"),
-    path("supportedDate", game.get_supported_date, name="supportedDate"),
-    path("backtest", game.get_backtest, name="backtest")
+    path("prediction", game.api_get_prediction, name="prediction"),
+    path("supportedDate", game.api_get_supported_date, name="supportedDate"),
+    path("backtest", game.api_get_backtest, name="backtest")
 ]
