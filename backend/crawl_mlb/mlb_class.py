@@ -128,7 +128,7 @@ class Team:
         self.vs_l_home_winning = {}
         self.vs_r_away_winning = {}
         self.vs_l_away_winning = {}
-        self.diff = {}
+        self.diff = -1
         self.l10 = {}
         self.streak = {}
         self.starter = {}
@@ -202,8 +202,10 @@ class Match:
         self.status = status
 
     def compare_all_item(self):
+        '''Should deprecated by the new weight mechanism '''
         # diff
         if self.filter.item["diff"]:
+            print("what", self.home_team.diff, self.away_team.diff)
             if self.home_team.diff > self.away_team.diff:
                 self.home_team.win_points += DIFF_WIN_POINT_WEIGHTS
             elif self.away_team.diff > self.home_team.diff:
